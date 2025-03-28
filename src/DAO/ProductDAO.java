@@ -85,20 +85,21 @@ public class ProductDAO {
                 return new ProductDTO(
                         rs.getString("id_product"),           // idProduct
                         rs.getString("name"),                // name
-                        rs.getString("origin"),              // company (giả sử origin là company)
-                        rs.getString("cpu"),                 // cpu
-                        rs.getString("ram"),                 // ram
-                        rs.getString("rom"),                 // storage
-                        rs.getString("battery"),             // screen (giả sử battery là screen)
-                        rs.getString("graphics_card"),       // card
+                        rs.getString("cpu"),              // company (giả sử origin là company)
+                        rs.getString("ram"),                 // cpu
+                        rs.getString("rom"),                 // ram
+                        rs.getString("graphics_card"),             // screen (giả sử battery là screen)
+                        rs.getString("battery"),       // card
+                        rs.getString("weight"),       // card
                         rs.getBigDecimal("price_store"),     // price
                         rs.getInt("quantity_store"),         // quantity
                         rs.getBoolean("status_store"),       // status
                         rs.getInt("broken_quantity_store"),  // quantityStore
-                        rs.getString("image"),               // image
-                        rs.getString("operating_system"),    // description (giả sử operating_system là description)
-                        rs.getString("category"),            // category
-                        rs.getString("origin")               // brand
+                        rs.getString("category"),               // image
+                        rs.getString("image"),    // description (giả sử operating_system là description)
+                        rs.getString("operating_system")  ,          // category                        rs.getString("operating_system")            // category
+                        rs.getString("origin")            // category
+
                 );
             }
             return null;
