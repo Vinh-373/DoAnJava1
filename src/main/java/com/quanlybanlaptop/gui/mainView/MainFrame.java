@@ -1,16 +1,16 @@
 package com.quanlybanlaptop.gui.mainView;
 
-import com.quanlybanlaptop.bus.ProductBUS;
+import com.quanlybanlaptop.bus.*;
 import javax.swing.*;
 
 public class MainFrame extends JFrame {
-    public MainFrame(ProductBUS productBUS) {
+    public MainFrame(ProductBUS productBUS, CategoryBUS categoryBUS,CompanyBUS companyBUS) {
         setTitle("Hệ thống quản lý cửa hàng laptop");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1400, 750);
 
         SidebarPanel sidebar = new SidebarPanel();
-        MainContentPanel mainContent = new MainContentPanel(productBUS,this);
+        MainContentPanel mainContent = new MainContentPanel(productBUS,categoryBUS,companyBUS,this);
         sidebar.setContentChangeListener(mainContent);
 
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, sidebar, mainContent);

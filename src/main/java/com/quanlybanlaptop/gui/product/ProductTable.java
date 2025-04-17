@@ -24,23 +24,33 @@ public class ProductTable {//bảng sản phẩm
         productTable.setDefaultEditor(Object.class, null); // Tắt focus trên từng ô
         JScrollPane scrollPane = new JScrollPane(productTable);
 
-        loadProductData(productBUS); // Tải dữ liệu ban đầu
+        loadProductData(productBUS,1,null); // Tải dữ liệu ban đầu
         return scrollPane;
     }
 
-    public static void loadProductData(ProductBUS productBUS) {
+    public static void loadProductData(ProductBUS productBUS, int status, String keyword) {
         tableModel.setRowCount(0);
         try {
-            ArrayList<ProductDTO> products = productBUS.getActiveProducts();
+            ArrayList<ProductDTO> products;
+            if (status == 1 && (keyword == null || keyword.isEmpty())) {
+                products = productBUS.getActiveProducts();
+
+            }else if(status == 0 && (keyword == null || keyword.isEmpty())) {
+                products = productBUS.getInactiveProducts();
+            }else if(status == 1 && (keyword != null || !keyword.isEmpty())) {
+                products = productBUS.searchProductsByName(keyword,1);
+            }else {
+                products = productBUS.searchProductsByName(keyword,0);
+            }
             if (products != null) {
                 for (ProductDTO product : products) {
                     Object[] rowData = {
                             product.getIdProduct(),
                             product.getName(),
-                            product.getQuantityStore(),
+                            product.getQuantity(),
                             product.getNameCategory(),
                             product.getNameCompany(),
-                            product.getPrice()
+                            String.format("%.3f VNĐ", product.getPrice())
                     };
                             tableModel.addRow(rowData);
                 }
@@ -63,4 +73,6 @@ public class ProductTable {//bảng sản phẩm
     public static DefaultTableModel getTableModel() {
         return tableModel;
     }
+
+
 }

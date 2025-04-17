@@ -6,27 +6,28 @@ public class ProductDTO {
     private int idProduct;           // ID sản phẩm
     private String name;                // Tên sản phẩm
     private String cpu;                 // CPU
-    private String sizeScreen;          // Kích thước màn hình
     private String ram;                 // RAM
+    private String rom;                 // ROM
     private String graphicsCard;        // Card đồ họa
     private String battery;             // Pin
-    private String operatingSystem;     // Hệ điều hành
     private String weight;              // Trọng lượng
     private BigDecimal price;              // Giá bán
-    private int quantityStore;          // Số lượng tồn kho
-    private int status;              // Trạng thái (còn hàng/hết hàng)
+    private int quantity;          // Số lượng tồn kho
+    private int quantityStock;
     private int idCategory;            // Danh mục
     private int idCompany;            // Danh mục
     private String image;               // Đường dẫn hình ảnh
-    private String rom;                 // ROM
+    private String sizeScreen;          // Kích thước màn hình
+    private String operatingSystem;     // Hệ điều hành
+    private int status;              // Trạng thái (còn hàng/hết hàng)
     private String nameCategory;
     private String nameCompany;
 
+
     // Constructor đầy đủ
-    public ProductDTO(int idProduct, String name, String cpu, String sizeScreen, String ram,
-                      String graphicsCard, String battery, String operatingSystem, String weight,  BigDecimal price,
-                      int quantityStore, int status,
-                      int idCategory, int idCompany, String image, String rom, String nameCategory, String nameCompany) {
+    public ProductDTO(int idProduct, String name, String cpu, String ram, String rom,
+                      String graphicsCard, String battery, String weight,  BigDecimal price, int quantity, int quantityStock,
+                      int idCategory, int idCompany, String image, String sizeScreen, String operatingSystem, int status, String nameCategory, String nameCompany) {
         this.idProduct = idProduct;
         this.name = name;
         this.cpu = cpu;
@@ -37,7 +38,8 @@ public class ProductDTO {
         this.operatingSystem = operatingSystem;
         this.weight = weight;
         this.price = price;
-        this.quantityStore = quantityStore;
+        this.quantity = quantity;
+        this.quantityStock = quantityStock;
         this.status = status;
         this.idCategory = idCategory;
         this.idCompany = idCompany;
@@ -142,14 +144,14 @@ public class ProductDTO {
     }
 
     // Getter và Setter cho quantityStore
-    public int getQuantityStore() {
-        return quantityStore;
+    public int getQuantity() {
+        return quantity;
     }
-
-    public void setQuantityStore(int quantityStore) {
-        this.quantityStore = quantityStore;
+    public void setQuantity(int quantity) {
+        this.quantity= quantity;
     }
-
+    public int getQuantityStock() {return quantityStock;}
+    public void setQuantityStock(int quantityStock) {this.quantityStock = quantityStock;}
     // Getter và Setter cho status
     public int getStatus() {
         return status;
@@ -231,7 +233,8 @@ public class ProductDTO {
                 ", operatingSystem='" + operatingSystem + '\'' +
                 ", weight='" + weight + '\'' +
                 ", price=" + price +
-                ", quantityStore=" + quantityStore +
+                ", quantityStore=" + quantity +
+                ", quantityStock=" + quantityStock +
                 ", status='" + status + '\'' +
                 ", idCompany=" + idCompany +
                 ", nameCompany=" + nameCompany +

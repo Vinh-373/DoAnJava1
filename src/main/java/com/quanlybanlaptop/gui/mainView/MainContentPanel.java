@@ -1,6 +1,9 @@
 package com.quanlybanlaptop.gui.mainView;
 
 
+import com.quanlybanlaptop.bus.CategoryBUS;
+import com.quanlybanlaptop.bus.CompanyBUS;
+import com.quanlybanlaptop.gui.category_brand.CategoryBrandPanel;
 import com.quanlybanlaptop.gui.product.ProductPanel;
 import com.quanlybanlaptop.gui.component.*;
 import com.quanlybanlaptop.bus.ProductBUS;
@@ -13,10 +16,15 @@ import java.net.URL;
 public class MainContentPanel extends JPanel implements ContentChangeListener {
     private JPanel contentArea, headerPanel,windowControlPanel,topPanel;
     private ProductBUS productBUS;
+    private CategoryBUS categoryBUS;
+    private CompanyBUS companyBUS;
+
     private JFrame parentFrame;
 
-    public MainContentPanel(ProductBUS productBUS,JFrame parentFrame ) {
+    public MainContentPanel(ProductBUS productBUS, CategoryBUS categoryBUS,CompanyBUS companyBUS, JFrame parentFrame ) {
         this.productBUS = productBUS;
+        this.categoryBUS = categoryBUS;
+        this.companyBUS = companyBUS;
         this.parentFrame = parentFrame;
         setLayout(new BorderLayout());
         setBackground(new Color(244, 241, 241));
@@ -156,11 +164,11 @@ public class MainContentPanel extends JPanel implements ContentChangeListener {
                 createHomeContent(contentArea);
                 break;
             case "Sản phẩm":
-                ProductPanel.createProductContent(contentArea, productBUS);
+                ProductPanel.createProductContent(contentArea, productBUS, categoryBUS, companyBUS);
                 break;
-//            case "Danh mục":
-//                CategoryBrandPanel.createCategoryBrandContent(contentArea, categoryBLL);
-//                break;
+            case "Loại, Hãng":
+                CategoryBrandPanel.createCategoryBrandContent(contentArea, categoryBUS,companyBUS);
+                break;
             default:
                 createDefaultContent(contentArea, menuItem);
                 break;

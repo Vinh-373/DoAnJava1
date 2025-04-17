@@ -43,7 +43,7 @@ public class SidebarPanel extends JPanel {
         String[][] menuItems = {
                 {"Trang chủ", "/img/home.png"},
                 {"Sản phẩm", "/img/product.png"},
-                {"Danh mục", "/img/brand.png"},
+                {"Loại, Hãng", "/img/brand.png"},
                 {"Tài khoản", "/img/account.png"},
                 {"Khách hàng", "/img/customer.png"},
                 {"Đơn hàng", "/img/order.png"},

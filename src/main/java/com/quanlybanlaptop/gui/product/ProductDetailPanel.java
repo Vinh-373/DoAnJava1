@@ -3,10 +3,11 @@ package com.quanlybanlaptop.gui.product;
 
 import com.quanlybanlaptop.dto.ProductDTO;
 import com.quanlybanlaptop.gui.component.*;
+import com.quanlybanlaptop.util.ImageLoader;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.math.BigDecimal;
 
 public class ProductDetailPanel {//panel bảng chi tiết sản phẩm
 
@@ -15,7 +16,7 @@ public class ProductDetailPanel {//panel bảng chi tiết sản phẩm
         JDialog detailDialog = new JDialog();
         detailDialog.setTitle("Chi tiết sản phẩm - " + product.getIdProduct());
         detailDialog.setModal(true);
-        detailDialog.setSize(700, 550);
+        detailDialog.setSize(850, 520);
         detailDialog.setLayout(new BorderLayout());
         detailDialog.setLocationRelativeTo(null);
         detailDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -35,7 +36,7 @@ public class ProductDetailPanel {//panel bảng chi tiết sản phẩm
         // Tạo panel chính
         JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        mainPanel.setBackground(Color.WHITE);
+        mainPanel.setBackground(new Color(176, 213, 250));
 
         // Panel chứa ảnh và bảng
         JPanel contentPanel = new JPanel(new BorderLayout(10, 10));
@@ -44,13 +45,14 @@ public class ProductDetailPanel {//panel bảng chi tiết sản phẩm
         // Hiển thị hình ảnh sản phẩm
         JLabel imageLabel = new JLabel("Không có hình ảnh", SwingConstants.CENTER);
         imageLabel.setOpaque(true);
-        imageLabel.setBackground(new Color(56, 136, 214));
-        imageLabel.setPreferredSize(new Dimension(300, 300));
+        imageLabel.setBackground(new Color(197, 221, 239));
+        imageLabel.setPreferredSize(new Dimension(445, 300));
 
         // Sử dụng đường dẫn giả định cho hình ảnh
-        String sampleImagePath = "src/images/pdf.png";
-        ImageIcon icon = new ImageIcon(sampleImagePath);
-        Image img = icon.getImage().getScaledInstance(300, 300, Image.SCALE_SMOOTH);
+        String sampleImagePath = product.getImage();
+        ImageIcon icon = ImageLoader.loadResourceImage(sampleImagePath);
+        assert icon != null;
+        Image img = icon.getImage().getScaledInstance(450, 300, Image.SCALE_SMOOTH);
         imageLabel.setIcon(new ImageIcon(img));
 
         contentPanel.add(imageLabel, BorderLayout.WEST);
@@ -69,7 +71,7 @@ public class ProductDetailPanel {//panel bảng chi tiết sản phẩm
                 {"Dung lượng Pin", product.getBattery() != null ? product.getBattery() : "N/A"},
                 {"Trọng lượng", product.getWeight() != null ? product.getWeight() : "N/A"},
                 {"Giá bán", String.format("%.3f VNĐ", product.getPrice())},
-                {"Số lượng ", String.valueOf(product.getQuantityStore())},
+                {"Số lượng ", String.valueOf(product.getQuantity())},
                 {"Tên Hãng", product.getNameCompany() != null ? product.getNameCompany() : "N/A"},
                 {"Trạng thái", product.getNameStatus(product.getStatus()) != null ? product.getNameStatus(product.getStatus()) : "N/A"},
         };
@@ -93,7 +95,7 @@ public class ProductDetailPanel {//panel bảng chi tiết sản phẩm
 
         // Thêm nút đóng
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setBackground(Color.WHITE);
+        buttonPanel.setBackground(new Color(176, 213, 250));
         RoundedButton closeButton = new RoundedButton("Đóng");
         closeButton.setPreferredSize(new Dimension(100, 35));
         closeButton.setFont(new Font("Arial", Font.PLAIN, 14));

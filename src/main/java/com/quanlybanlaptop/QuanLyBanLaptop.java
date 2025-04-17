@@ -1,5 +1,9 @@
 package com.quanlybanlaptop;
 
+import com.quanlybanlaptop.bus.CategoryBUS;
+import com.quanlybanlaptop.bus.CompanyBUS;
+import com.quanlybanlaptop.dao.CategoryDAO;
+import com.quanlybanlaptop.dao.CompanyDAO;
 import com.quanlybanlaptop.dao.DatabaseConnection;
 import com.quanlybanlaptop.dao.ProductDAO;
 import com.quanlybanlaptop.bus.ProductBUS;
@@ -19,7 +23,11 @@ public class QuanLyBanLaptop {
 
                 ProductDAO productDAO = new ProductDAO(conn);
                 ProductBUS productBUS = new ProductBUS(productDAO);
-                MainFrame mainFrame = new MainFrame(productBUS);
+                CategoryDAO categoryDAO = new CategoryDAO(conn);
+                CategoryBUS categoryBUS = new CategoryBUS(categoryDAO);
+                CompanyDAO companyDAO = new CompanyDAO(conn);
+                CompanyBUS companyBUS = new CompanyBUS(companyDAO);
+                MainFrame mainFrame = new MainFrame(productBUS,categoryBUS,companyBUS);
                 mainFrame.setVisible(true);
             } catch (Exception e) {
                 e.printStackTrace();
