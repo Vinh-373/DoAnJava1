@@ -1,9 +1,13 @@
 package com.quanlybanlaptop.gui.mainView;
 
+import com.quanlybanlaptop.Login;
+import com.quanlybanlaptop.bus.AdminBUS;
+import com.quanlybanlaptop.dto.AdminDTO;
 import com.quanlybanlaptop.util.ImageLoader;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.SQLException;
 
 public class SidebarPanel extends JPanel {
     private JPanel buttonPanel;
@@ -12,7 +16,7 @@ public class SidebarPanel extends JPanel {
     private JLabel userLabel;
     private static final float FONT_SIZE_PERCENTAGE = 0.08f; // Font chiếm 8% chiều rộng
 
-    public SidebarPanel() {
+    public SidebarPanel(AdminDTO adminDTO) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBackground(Color.WHITE);
         setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1, Color.GRAY));
@@ -30,8 +34,7 @@ public class SidebarPanel extends JPanel {
             System.err.println("Không thể tải ảnh avatar.png");
         }
 
-        // Tên người dùng
-        userLabel = new JLabel("Quang Vinh");
+        userLabel = new JLabel(adminDTO.getName());
         userLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         updateUserFontSize(); // Cập nhật kích thước font ban đầu
         userLabel.setForeground(new Color(50, 50, 50));
@@ -44,11 +47,9 @@ public class SidebarPanel extends JPanel {
                 {"Trang chủ", "/img/home.png"},
                 {"Sản phẩm", "/img/product.png"},
                 {"Loại, Hãng", "/img/brand.png"},
-                {"Tài khoản", "/img/account.png"},
                 {"Khách hàng", "/img/customer.png"},
-                {"Đơn hàng", "/img/order.png"},
+                {"Tài khoản", "/img/account.png"},
                 {"Hóa đơn", "/img/order.png"},
-                {"Nhà cung cấp", "/img/supplier.png"},
                 {"Kho hàng", "/img/import.png"},
                 {"Bảo hành", "/img/warranty.png"},
                 {"Thống kê", "/img/statistics.png"},
@@ -70,7 +71,6 @@ public class SidebarPanel extends JPanel {
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         buttonPanel.setBackground(Color.WHITE);
         buttonPanel.setOpaque(false);
-        buttonPanel.add(Box.createVerticalGlue());
 
         for (String[] item : menuItems) {
             ImageIcon iconItem = ImageLoader.loadResourceImage(item[1]);
@@ -132,7 +132,11 @@ public class SidebarPanel extends JPanel {
                     selectedButton = button;
                     button.setBackground(selectedColor);
                     if (listener != null) {
-                        listener.onContentChange(item[0]);
+                        try {
+                            listener.onContentChange(item[0]);
+                        } catch (SQLException ex) {
+                            throw new RuntimeException(ex);
+                        }
                     }
                 });
 

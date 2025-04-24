@@ -39,7 +39,22 @@ public class ProductBUS {
     }
 
 
-
+    public ArrayList<ProductDTO> getOutOfStock(int status) throws SQLException {
+        ArrayList<ProductDTO> allProducts = getAllProducts();
+        ArrayList<ProductDTO> outOfStock = new ArrayList<>();
+        for (ProductDTO product : allProducts) {
+            if (status == 1) {
+                if (product.getQuantity() <=3) {
+                    outOfStock.add(product);
+                }
+            }else {
+                if (product.getQuantityStock() <= 3) {
+                    outOfStock.add(product);
+                }
+            }
+        }
+        return outOfStock;
+    }
 
     // Thêm sản phẩm mới
     public boolean addProduct(ProductDTO product) throws SQLException {
@@ -61,7 +76,7 @@ public class ProductBUS {
     }
 
     // Tìm kiếm sản phẩm theo tên
-    public ArrayList<ProductDTO> searchProductsByName(String name, int status) throws SQLException {
+    public ArrayList<ProductDTO> searchProductsByName(String name, String status) throws SQLException {
         // Logic nghiệp vụ: Kiểm tra dữ liệu đầu vào
         if (name == null) {
             throw new IllegalArgumentException("Tên tìm kiếm không được null!");
@@ -73,6 +88,13 @@ public class ProductBUS {
     // Lấy thông tin chi tiết của một sản phẩm theo ID
     public ProductDTO getProductById(int idProduct) throws SQLException {
         return productDAO.getProductById(idProduct);
+    }
+    // ProductBUS.java
+    public boolean updateqtityStock(int idProduct, int quantity) throws SQLException {
+        return productDAO.updateQuantityStock(idProduct, quantity);
+    }
+    public boolean updateqtityStore(int idProduct, int quantity) throws SQLException {
+        return productDAO.updateQuantity(idProduct, quantity);
     }
 
 }

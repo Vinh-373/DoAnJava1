@@ -157,6 +157,28 @@ public class ProductDAO {
             throw new SQLException("Lỗi khi cập nhật sản phẩm: " + ex.getMessage(), ex);
         }
     }
+    public boolean updateQuantityStock(int idProduct, int quantity) {
+        String sql = "UPDATE PRODUCT SET quantity_stock = quantity_stock + ? WHERE id_product = ? AND status = 1";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, quantity);
+            stmt.setInt(2, idProduct);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    public boolean updateQuantity(int idProduct, int quantity) {
+        String sql = "UPDATE PRODUCT SET quantity = quantity + ? WHERE id_product = ? AND status = 1";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, quantity);
+            stmt.setInt(2, idProduct);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
     public boolean deleteProduct(int idProduct,int status) throws SQLException {
         String sql = "UPDATE PRODUCT SET status = ? WHERE id_product = ?";
 
@@ -169,7 +191,7 @@ public class ProductDAO {
             throw new SQLException("Lỗi khi xóa sản phẩm: " + ex.getMessage(), ex);
         }
     }
-    public ArrayList<ProductDTO> searchProducts(String keyword, int status) throws SQLException {
+    public ArrayList<ProductDTO> searchProducts(String keyword, String status) throws SQLException {
         ArrayList<ProductDTO> productList = new ArrayList<>();
         String sql = "SELECT p.id_product, p.name, p.cpu, p.ram, p.rom, p.graphics_card, p.battery,\n" +
                 "       p.weight, p.price, p.quantity, p.quantity_stock, p.id_category, p.id_company, p.img, p.size_screen,\n" +
@@ -177,7 +199,16 @@ public class ProductDAO {
                 "FROM PRODUCT p \n" +
                 "JOIN CATEGORY c ON p.id_category = c.id_category \n" +
                 "JOIN COMPANY s ON p.id_company = s.id_company \n" +
-                "WHERE (p.name LIKE ? OR p.price LIKE ? OR c.name_category LIKE ? OR s.name_company LIKE ? OR p.id_product LIKE ?) AND p.status = ?";
+                "WHERE (p.name LIKE ? OR p.price LIKE ? OR c.name_category LIKE ? OR s.name_company LIKE ?) AND p.status = ?";
+        int tt ;
+        if(status.equals("Ngừng HĐ")) {
+             tt = 0;
+        }else{
+             tt = 1;
+        }
+        if(status.equals("Cần nhập")){
+            sql+=" AND p.quantity < 4";
+        }
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             String searchKeyword = "%" + keyword + "%";
@@ -185,8 +216,7 @@ public class ProductDAO {
             stmt.setString(2, searchKeyword);
             stmt.setString(3, searchKeyword);
             stmt.setString(4, searchKeyword);
-            stmt.setString(5, searchKeyword);
-            stmt.setInt(6, status);
+            stmt.setInt(5, tt);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     ProductDTO product = createProductDTO(rs);

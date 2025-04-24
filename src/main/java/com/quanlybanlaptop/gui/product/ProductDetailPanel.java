@@ -8,6 +8,7 @@ import com.quanlybanlaptop.util.ImageLoader;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.text.DecimalFormat;
 
 public class ProductDetailPanel {//panel bảng chi tiết sản phẩm
 
@@ -50,13 +51,13 @@ public class ProductDetailPanel {//panel bảng chi tiết sản phẩm
 
         // Sử dụng đường dẫn giả định cho hình ảnh
         String sampleImagePath = product.getImage();
-        ImageIcon icon = ImageLoader.loadResourceImage(sampleImagePath);
+        ImageIcon icon = ImageLoader.loadResourceImage("/img/"+sampleImagePath);
         assert icon != null;
         Image img = icon.getImage().getScaledInstance(450, 300, Image.SCALE_SMOOTH);
         imageLabel.setIcon(new ImageIcon(img));
 
         contentPanel.add(imageLabel, BorderLayout.WEST);
-
+        DecimalFormat df = new DecimalFormat("#,###");
         // Dữ liệu bảng
         String[][] data = {
                 {"Mã sản phẩm", String.valueOf(product.getIdProduct())},
@@ -70,7 +71,7 @@ public class ProductDetailPanel {//panel bảng chi tiết sản phẩm
                 {"Màn hình", product.getSizeScreen() != null ? product.getSizeScreen() : "N/A"},
                 {"Dung lượng Pin", product.getBattery() != null ? product.getBattery() : "N/A"},
                 {"Trọng lượng", product.getWeight() != null ? product.getWeight() : "N/A"},
-                {"Giá bán", String.format("%.3f VNĐ", product.getPrice())},
+                {"Giá bán", df.format(product.getPrice()) + " VNĐ"},
                 {"Số lượng ", String.valueOf(product.getQuantity())},
                 {"Tên Hãng", product.getNameCompany() != null ? product.getNameCompany() : "N/A"},
                 {"Trạng thái", product.getNameStatus(product.getStatus()) != null ? product.getNameStatus(product.getStatus()) : "N/A"},

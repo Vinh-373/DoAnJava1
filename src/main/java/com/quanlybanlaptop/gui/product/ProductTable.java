@@ -7,6 +7,7 @@ import com.quanlybanlaptop.dto.ProductDTO;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class ProductTable {//bảng sản phẩm
@@ -34,14 +35,18 @@ public class ProductTable {//bảng sản phẩm
             ArrayList<ProductDTO> products;
             if (status == 1 && (keyword == null || keyword.isEmpty())) {
                 products = productBUS.getActiveProducts();
-
             }else if(status == 0 && (keyword == null || keyword.isEmpty())) {
                 products = productBUS.getInactiveProducts();
             }else if(status == 1 && (keyword != null || !keyword.isEmpty())) {
-                products = productBUS.searchProductsByName(keyword,1);
-            }else {
-                products = productBUS.searchProductsByName(keyword,0);
+                products = productBUS.searchProductsByName(keyword,"Hoạt động");
+            }else if(status == 0 && (keyword != null || !keyword.isEmpty())) {
+                products = productBUS.searchProductsByName(keyword,"Ngừng HĐ");
+            }else if(status == 2 && (keyword == null || keyword.isEmpty())) {
+                products = productBUS.getOutOfStock(1);
+            }else{
+                products = productBUS.searchProductsByName(keyword,"Cần nhập");
             }
+            DecimalFormat df = new DecimalFormat("#,###");
             if (products != null) {
                 for (ProductDTO product : products) {
                     Object[] rowData = {
@@ -50,7 +55,7 @@ public class ProductTable {//bảng sản phẩm
                             product.getQuantity(),
                             product.getNameCategory(),
                             product.getNameCompany(),
-                            String.format("%.3f VNĐ", product.getPrice())
+                            df.format(product.getPrice()) + " VNĐ"
                     };
                             tableModel.addRow(rowData);
                 }

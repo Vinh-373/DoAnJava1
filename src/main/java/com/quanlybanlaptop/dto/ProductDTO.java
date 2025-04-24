@@ -27,7 +27,8 @@ public class ProductDTO {
     // Constructor đầy đủ
     public ProductDTO(int idProduct, String name, String cpu, String ram, String rom,
                       String graphicsCard, String battery, String weight,  BigDecimal price, int quantity, int quantityStock,
-                      int idCategory, int idCompany, String image, String sizeScreen, String operatingSystem, int status, String nameCategory, String nameCompany) {
+                      int idCategory, int idCompany, String image, String sizeScreen, String operatingSystem,
+                      int status, String nameCategory, String nameCompany) {
         this.idProduct = idProduct;
         this.name = name;
         this.cpu = cpu;
@@ -244,5 +245,6 @@ public class ProductDTO {
                 ", rom='" + rom + '\'' +
                 '}';
     }
+
 
 }

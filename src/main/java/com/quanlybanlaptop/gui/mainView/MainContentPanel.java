@@ -1,31 +1,45 @@
 package com.quanlybanlaptop.gui.mainView;
 
 
-import com.quanlybanlaptop.bus.CategoryBUS;
-import com.quanlybanlaptop.bus.CompanyBUS;
+import com.quanlybanlaptop.bus.*;
+import com.quanlybanlaptop.dto.AdminDTO;
+import com.quanlybanlaptop.gui.BillExport.ExportCtn;
+import com.quanlybanlaptop.gui.account.AccountPanel;
 import com.quanlybanlaptop.gui.category_brand.CategoryBrandPanel;
 import com.quanlybanlaptop.gui.product.ProductPanel;
 import com.quanlybanlaptop.gui.component.*;
-import com.quanlybanlaptop.bus.ProductBUS;
+import com.quanlybanlaptop.gui.stock.StockPanel;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.net.URL;
+import java.sql.SQLException;
 
 public class MainContentPanel extends JPanel implements ContentChangeListener {
     private JPanel contentArea, headerPanel,windowControlPanel,topPanel;
     private ProductBUS productBUS;
     private CategoryBUS categoryBUS;
     private CompanyBUS companyBUS;
+    private BillImportBUS billImportBUS;
+    private SeriProductBUS seriProductBUS;
+    private AdminDTO adminDTO;
+    private BillExportBUS billExportBUS;
+    private BillExDetailBUS billExDetailBUS;
 
     private JFrame parentFrame;
 
-    public MainContentPanel(ProductBUS productBUS, CategoryBUS categoryBUS,CompanyBUS companyBUS, JFrame parentFrame ) {
+    public MainContentPanel(AdminDTO adminDTO,ProductBUS productBUS, CategoryBUS categoryBUS, CompanyBUS companyBUS, BillImportBUS billImportBUS, SeriProductBUS seriProductBUS,BillExportBUS billExportBUS,BillExDetailBUS billExDetailBUS, JFrame parentFrame)  {
         this.productBUS = productBUS;
         this.categoryBUS = categoryBUS;
         this.companyBUS = companyBUS;
         this.parentFrame = parentFrame;
+        this.billImportBUS = billImportBUS;
+        this.seriProductBUS = seriProductBUS;
+        this.billExportBUS = billExportBUS;
+        this.billExDetailBUS = billExDetailBUS;
+        this.adminDTO = adminDTO;
         setLayout(new BorderLayout());
         setBackground(new Color(244, 241, 241));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -35,7 +49,7 @@ public class MainContentPanel extends JPanel implements ContentChangeListener {
         contentArea.setBackground(Color.WHITE);
 
         topPanel = new JPanel(new BorderLayout());
-        topPanel.add(windowControlPanel, BorderLayout.NORTH);
+//        topPanel.add(windowControlPanel, BorderLayout.NORTH);
         topPanel.add(headerPanel, BorderLayout.CENTER);
 
         add(topPanel, BorderLayout.NORTH);
@@ -143,7 +157,7 @@ public class MainContentPanel extends JPanel implements ContentChangeListener {
     }
 
     @Override
-    public void onContentChange(String menuItem) {
+    public void onContentChange(String menuItem) throws SQLException {
         updateContent(menuItem);
     }
 
@@ -164,10 +178,19 @@ public class MainContentPanel extends JPanel implements ContentChangeListener {
                 createHomeContent(contentArea);
                 break;
             case "Sản phẩm":
-                ProductPanel.createProductContent(contentArea, productBUS, categoryBUS, companyBUS);
+                ProductPanel.createProductContent(contentArea, productBUS, categoryBUS, companyBUS,seriProductBUS);
                 break;
             case "Loại, Hãng":
                 CategoryBrandPanel.createCategoryBrandContent(contentArea, categoryBUS,companyBUS);
+                break;
+            case "Kho hàng":
+                StockPanel.StockPanel(adminDTO,contentArea,productBUS,billImportBUS,seriProductBUS);
+                break;
+            case "Hóa đơn":
+                ExportCtn.createExportPanel(contentArea,adminDTO,billExportBUS,billExDetailBUS,productBUS,seriProductBUS);
+                break;
+            case "Tài khoản":
+                AccountPanel.createAccountPanel(contentArea);
                 break;
             default:
                 createDefaultContent(contentArea, menuItem);

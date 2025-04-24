@@ -3,15 +3,22 @@ package com.quanlybanlaptop.gui.product;
 
 import com.quanlybanlaptop.bus.CategoryBUS;
 import com.quanlybanlaptop.bus.CompanyBUS;
+import com.quanlybanlaptop.bus.SeriProductBUS;
 import com.quanlybanlaptop.dto.ProductDTO;
 import com.quanlybanlaptop.gui.component.*;
 import com.quanlybanlaptop.bus.ProductBUS;
 import com.quanlybanlaptop.util.ImageLoader;
-
+import java.io.File;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import java.io.FileInputStream;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
+import java.math.BigDecimal;
+import org.apache.poi.ss.usermodel.DataFormatter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
@@ -19,7 +26,7 @@ import java.util.ArrayList;
 
 public class TopProductPanel {//panel các nút
 
-    public static JPanel createButtonPanel(ProductBUS productBUS, CategoryBUS categoryBUS, CompanyBUS companyBUS) {
+    public static JPanel createButtonPanel(ProductBUS productBUS, CategoryBUS categoryBUS, CompanyBUS companyBUS,SeriProductBUS seriProductBUS) {
         JPanel buttonControlPanel = new JPanel(new GridBagLayout());
         buttonControlPanel.setBackground(Color.WHITE);
         buttonControlPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -36,16 +43,18 @@ public class TopProductPanel {//panel các nút
         btnSeeDetail.setImageSize(32, 32);
         RoundedButton btnSeeImeis = new RoundedButton("Ds Seri", ImageLoader.loadResourceImage("/img/serinumber.png"));
         btnSeeImeis.setImageSize(32, 32);
-        RoundedButton btnImportEx = new RoundedButton("Xuất PDF",ImageLoader.loadResourceImage("/img/pdf.png"));
-        btnImportEx.setImageSize(32, 32);
+//        RoundedButton btnImportEx = new RoundedButton("Xuất PDF",ImageLoader.loadResourceImage("/img/pdf.png"));
+//        btnImportEx.setImageSize(32, 32);
         RoundedButton btnExportEx = new RoundedButton("Nhập Excel", ImageLoader.loadResourceImage("/img/export_control.png"));
         btnExportEx.setImageSize(32, 32);
         RoundedButton btnRefresh = new RoundedButton("Làm mới", ImageLoader.loadResourceImage("/img/refresh_control.png"));
         btnRefresh.setImageSize(32, 32);
 
-        String[] statusList = {"Hoạt động", "Ngừng HĐ"};
+        String[] statusList = {"Hoạt động", "Ngừng HĐ", "Cần Nhập"};
         JComboBox<String> statuscb = RoundedComponent.createRoundedComboBox(statusList, 10);
         statuscb.setPreferredSize(new Dimension(100, 35));
+
+
 
         JTextField tfName = RoundedComponent.createRoundedTextField(10);
         tfName.setPreferredSize(new Dimension(200, 35));
@@ -71,8 +80,10 @@ public class TopProductPanel {//panel các nút
                 int status;
                 if(selectedOs.equals("Hoạt động")){
                     status = 1;
-                }else {
+                }else if(selectedOs.equals("Ngừng HĐ")){
                     status = 0;
+                }else{
+                    status = 2;
                 }
                 System.out.println(status);
                 // Gọi hàm load dữ liệu tìm kiếm
@@ -141,8 +152,6 @@ public class TopProductPanel {//panel các nút
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
             }
-
-
         });
         btnEdit.addActionListener(e -> {
             try {
@@ -160,7 +169,7 @@ public class TopProductPanel {//panel các nút
                 btnDelete.setVisible(true);
                 btnRestore.setEnabled(false);
                 btnEdit.setEnabled(true);
-            }else {
+            }else if(selectedOs.equals("Ngừng HĐ")){
                 ProductTable.loadProductData(productBUS,0,tfName.getText());
                 btnAdd.setEnabled(false);
                 btnDelete.setVisible(false);
@@ -168,6 +177,19 @@ public class TopProductPanel {//panel các nút
                 btnRestore.setEnabled(true);
                 btnEdit.setEnabled(false);
 
+            }else{
+                ProductTable.loadProductData(productBUS,2,tfName.getText());
+                btnAdd.setEnabled(true);
+                btnDelete.setVisible(true);
+                btnRestore.setEnabled(false);
+                btnEdit.setEnabled(true);
+            }
+        });
+        btnSeeImeis.addActionListener(e -> {
+            try {
+                SeriListDialog.showDialog(productBUS,seriProductBUS);
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
             }
         });
         btnRefresh.addActionListener(e -> {
@@ -205,6 +227,89 @@ public class TopProductPanel {//panel các nút
                 JOptionPane.showMessageDialog(null, "Vui lòng chọn một sản phẩm để bật!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
             }
         });
+        btnExportEx.addActionListener(e -> {
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setCurrentDirectory(new File("D:/Doanjava/QuanLyBanLaptop/src/main/resources/importData"));
+            int result = fileChooser.showOpenDialog(null);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                File file = fileChooser.getSelectedFile();
+                try (FileInputStream fis = new FileInputStream(file);
+                     XSSFWorkbook workbook = new XSSFWorkbook(fis)) {
+                    XSSFSheet sheet = workbook.getSheetAt(0);
+
+                    // Sử dụng DataFormatter để chuyển tất cả giá trị ô thành chuỗi
+                    DataFormatter formatter = new DataFormatter();
+
+                    for (Row row : sheet) {
+                        if (row.getRowNum() == 0) continue; // Bỏ qua header
+
+                        ProductDTO product = new ProductDTO();
+                        product.setIdProduct(0);
+
+                        // Đọc tất cả giá trị ô dưới dạng chuỗi
+                        product.setName(formatter.formatCellValue(row.getCell(0)));
+                        product.setCpu(formatter.formatCellValue(row.getCell(1)));
+                        product.setRam(formatter.formatCellValue(row.getCell(2)));
+                        product.setRom(formatter.formatCellValue(row.getCell(3)));
+                        product.setGraphicsCard(formatter.formatCellValue(row.getCell(4)));
+                        product.setBattery(formatter.formatCellValue(row.getCell(5)));
+                        product.setWeight(formatter.formatCellValue(row.getCell(6)));
+
+                        // Cột 7: Price (chuyển từ chuỗi thành BigDecimal)
+                        String priceStr = formatter.formatCellValue(row.getCell(7));
+                        try {
+                            product.setPrice(new BigDecimal(priceStr));
+                        } catch (NumberFormatException ex) {
+                            product.setPrice(BigDecimal.ZERO);
+                            System.err.println("Giá trị Price không hợp lệ tại hàng " + (row.getRowNum() + 1) + ": " + priceStr);
+                        }
+
+                        // Thiết lập quantity
+                        product.setQuantity(0);
+                        product.setQuantityStock(0);
+
+                        // Cột 8: idCategory (chuyển từ chuỗi thành int)
+                        String categoryIdStr = formatter.formatCellValue(row.getCell(8));
+                        try {
+                            product.setIdCategory(Integer.parseInt(categoryIdStr));
+                        } catch (NumberFormatException ex) {
+                            product.setIdCategory(0);
+                            System.err.println("Giá trị idCategory không hợp lệ tại hàng " + (row.getRowNum() + 1) + ": " + categoryIdStr);
+                        }
+
+                        // Cột 9: idCompany (chuyển từ chuỗi thành int)
+                        String companyIdStr = formatter.formatCellValue(row.getCell(9));
+                        try {
+                            product.setIdCompany(Integer.parseInt(companyIdStr));
+                        } catch (NumberFormatException ex) {
+                            product.setIdCompany(0);
+                            System.err.println("Giá trị idCompany không hợp lệ tại hàng " + (row.getRowNum() + 1) + ": " + companyIdStr);
+                        }
+
+                        product.setImage(formatter.formatCellValue(row.getCell(10)));
+                        product.setSizeScreen(formatter.formatCellValue(row.getCell(11)));
+                        product.setOperatingSystem(formatter.formatCellValue(row.getCell(12)));
+
+                        // Thiết lập status
+                        product.setStatus(1);
+
+                        // Lấy tên danh mục và hãng
+                        product.setNameCategory(categoryBUS.getCategoryById(product.getIdCategory()).getCategoryName());
+                        product.setNameCompany(companyBUS.getCompanyById(product.getIdCompany()).getCompanyName());
+
+                        // Thêm sản phẩm
+                        productBUS.addProduct(product);
+                    }
+
+                    JOptionPane.showMessageDialog(null, "Đã nhập Excel thành công!");
+                    ProductTable.loadProductData(productBUS, 1, ""); // Refresh bảng
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, "Lỗi khi nhập Excel: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+                    ex.printStackTrace();
+                }
+            }
+        });
+
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.gridy = 0;
@@ -217,11 +322,10 @@ public class TopProductPanel {//panel các nút
         gbc.gridx = 2; buttonControlPanel.add(btnRestore, gbc);
         gbc.gridx = 3; buttonControlPanel.add(btnSeeDetail, gbc);
         gbc.gridx = 4; buttonControlPanel.add(btnSeeImeis, gbc);
-        gbc.gridx = 5; buttonControlPanel.add(btnImportEx, gbc);
-        gbc.gridx = 6; buttonControlPanel.add(btnExportEx, gbc);
-        gbc.gridx = 7; buttonControlPanel.add(btnRefresh, gbc);
-        gbc.gridx = 8; gbc.gridwidth = 2; buttonControlPanel.add(statuscb, gbc);
-        gbc.gridx = 10; gbc.gridwidth = 4; buttonControlPanel.add(tfName, gbc);
+        gbc.gridx = 5; buttonControlPanel.add(btnExportEx, gbc);
+        gbc.gridx = 6; buttonControlPanel.add(btnRefresh, gbc);
+        gbc.gridx = 7; gbc.gridwidth = 2; buttonControlPanel.add(statuscb, gbc);
+        gbc.gridx = 9; gbc.gridwidth = 4; buttonControlPanel.add(tfName, gbc);
 
         return buttonControlPanel;
     }
