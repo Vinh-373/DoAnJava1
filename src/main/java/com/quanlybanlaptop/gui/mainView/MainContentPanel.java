@@ -192,6 +192,9 @@ public class MainContentPanel extends JPanel implements ContentChangeListener {
             case "Tài khoản":
                 AccountPanel.createAccountPanel(contentArea);
                 break;
+//            case "Bảo hành":
+//                InsurancePanel.createPanel(contentArea);
+//                break;
             default:
                 createDefaultContent(contentArea, menuItem);
                 break;
