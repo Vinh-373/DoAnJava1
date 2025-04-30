@@ -6,7 +6,6 @@ import com.quanlybanlaptop.dto.AdminDTO;
 import com.quanlybanlaptop.gui.component.RoundedButton;
 import com.quanlybanlaptop.gui.mainView.MainFrame;
 import com.quanlybanlaptop.util.ImageLoader;
-import com.quanlybanlaptop.dao.DatabaseConnection;
 
 import javax.swing.*;
 import java.awt.*;
@@ -101,9 +100,21 @@ public class Login extends JFrame {
                             BillExportBUS billExportBUS = new BillExportBUS(billExportDAO);
                             BillExDetailDAO billExDetailDAO = new BillExDetailDAO(conn);
                             BillExDetailBUS billExDetailBUS = new BillExDetailBUS(billExDetailDAO);
+                            CustomerDAO customerDAO = new CustomerDAO();
+                            CustomerBUS customerBUS = new CustomerBUS();
 
-                            // Truyền adminDTO vào MainFrame để hiển thị thông tin người dùng
-                            MainFrame mainFrame = new MainFrame(admin,productBUS, categoryBUS, companyBUS, billImportBUS,seriProductBUS,billExportBUS,billExDetailBUS);
+                            // Truyền customerBUS vào MainFrame
+                            MainFrame mainFrame = new MainFrame(
+                                admin,
+                                productBUS,
+                                categoryBUS,
+                                companyBUS,
+                                billImportBUS,
+                                seriProductBUS,
+                                billExportBUS,
+                                billExDetailBUS,
+                                customerBUS
+                            );
                             mainFrame.setVisible(true);
                         } catch (Exception ex) {
                             ex.printStackTrace();

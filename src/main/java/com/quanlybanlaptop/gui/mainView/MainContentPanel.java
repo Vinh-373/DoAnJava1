@@ -8,6 +8,7 @@ import com.quanlybanlaptop.gui.account.AccountPanel;
 import com.quanlybanlaptop.gui.category_brand.CategoryBrandPanel;
 import com.quanlybanlaptop.gui.product.ProductPanel;
 import com.quanlybanlaptop.gui.component.*;
+import com.quanlybanlaptop.gui.customer.CustomerPanel;
 import com.quanlybanlaptop.gui.stock.StockPanel;
 
 import javax.swing.*;
@@ -27,10 +28,11 @@ public class MainContentPanel extends JPanel implements ContentChangeListener {
     private AdminDTO adminDTO;
     private BillExportBUS billExportBUS;
     private BillExDetailBUS billExDetailBUS;
+    private CustomerBUS customerBUS; 
 
     private JFrame parentFrame;
 
-    public MainContentPanel(AdminDTO adminDTO,ProductBUS productBUS, CategoryBUS categoryBUS, CompanyBUS companyBUS, BillImportBUS billImportBUS, SeriProductBUS seriProductBUS,BillExportBUS billExportBUS,BillExDetailBUS billExDetailBUS, JFrame parentFrame)  {
+    public MainContentPanel(AdminDTO adminDTO, ProductBUS productBUS, CategoryBUS categoryBUS, CompanyBUS companyBUS, BillImportBUS billImportBUS, SeriProductBUS seriProductBUS, BillExportBUS billExportBUS, BillExDetailBUS billExDetailBUS, CustomerBUS customerBUS, JFrame parentFrame) {
         this.productBUS = productBUS;
         this.categoryBUS = categoryBUS;
         this.companyBUS = companyBUS;
@@ -40,6 +42,7 @@ public class MainContentPanel extends JPanel implements ContentChangeListener {
         this.billExportBUS = billExportBUS;
         this.billExDetailBUS = billExDetailBUS;
         this.adminDTO = adminDTO;
+        this.customerBUS = customerBUS;
         setLayout(new BorderLayout());
         setBackground(new Color(244, 241, 241));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -163,31 +166,31 @@ public class MainContentPanel extends JPanel implements ContentChangeListener {
 
     private void updateContent(String menuItem) {
         contentArea.removeAll();
-
+    
         // Xử lý headerPanel
         if (menuItem.equals("Trang chủ")) {
             if (headerPanel.getParent() == null) {
-                topPanel.add(headerPanel, BorderLayout.CENTER); // Thêm lại headerPanel vào topPanel
+                topPanel.add(headerPanel, BorderLayout.CENTER);
             }
         } else {
-            topPanel.removeAll(); // Xóa headerPanel khỏi topPanel
+            topPanel.removeAll();
         }
-
+    
         switch (menuItem) {
             case "Trang chủ":
                 createHomeContent(contentArea);
                 break;
             case "Sản phẩm":
-                ProductPanel.createProductContent(contentArea, productBUS, categoryBUS, companyBUS,seriProductBUS);
+                ProductPanel.createProductContent(contentArea, productBUS, categoryBUS, companyBUS, seriProductBUS);
                 break;
             case "Loại, Hãng":
-                CategoryBrandPanel.createCategoryBrandContent(contentArea, categoryBUS,companyBUS);
+                CategoryBrandPanel.createCategoryBrandContent(contentArea, categoryBUS, companyBUS);
                 break;
             case "Kho hàng":
-                StockPanel.StockPanel(adminDTO,contentArea,productBUS,billImportBUS,seriProductBUS);
+                StockPanel.StockPanel(adminDTO, contentArea, productBUS, billImportBUS, seriProductBUS);
                 break;
             case "Hóa đơn":
-                ExportCtn.createExportPanel(contentArea,adminDTO,billExportBUS,billExDetailBUS,productBUS,seriProductBUS);
+                ExportCtn.createExportPanel(contentArea, adminDTO, billExportBUS, billExDetailBUS, productBUS, seriProductBUS);
                 break;
             case "Tài khoản":
                 AccountPanel.createAccountPanel(contentArea);
@@ -195,12 +198,14 @@ public class MainContentPanel extends JPanel implements ContentChangeListener {
 //            case "Bảo hành":
 //                InsurancePanel.createPanel(contentArea);
 //                break;
+            case "Khách hàng":
+                CustomerPanel.createCustomerContent(contentArea, customerBUS); // Gọi đúng phương thức và truyền customerBUS
+                break;
             default:
                 createDefaultContent(contentArea, menuItem);
                 break;
         }
-
-        // Cập nhật giao diện
+    
         topPanel.revalidate();
         topPanel.repaint();
         contentArea.revalidate();

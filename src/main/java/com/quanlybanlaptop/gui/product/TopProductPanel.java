@@ -6,7 +6,9 @@ import com.quanlybanlaptop.bus.CompanyBUS;
 import com.quanlybanlaptop.bus.SeriProductBUS;
 import com.quanlybanlaptop.dto.ProductDTO;
 import com.quanlybanlaptop.gui.component.*;
+import com.quanlybanlaptop.gui.customer.CustomerTable;
 import com.quanlybanlaptop.bus.ProductBUS;
+import com.quanlybanlaptop.util.ExcelExporter;
 import com.quanlybanlaptop.util.ImageLoader;
 import java.io.File;
 import org.apache.poi.ss.usermodel.Row;
@@ -16,6 +18,8 @@ import java.io.FileInputStream;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 import java.awt.*;
 import java.math.BigDecimal;
 import org.apache.poi.ss.usermodel.DataFormatter;
@@ -43,10 +47,10 @@ public class TopProductPanel {//panel các nút
         btnSeeDetail.setImageSize(32, 32);
         RoundedButton btnSeeImeis = new RoundedButton("Ds Seri", ImageLoader.loadResourceImage("/img/serinumber.png"));
         btnSeeImeis.setImageSize(32, 32);
-//        RoundedButton btnImportEx = new RoundedButton("Xuất PDF",ImageLoader.loadResourceImage("/img/pdf.png"));
-//        btnImportEx.setImageSize(32, 32);
-        RoundedButton btnExportEx = new RoundedButton("Nhập Excel", ImageLoader.loadResourceImage("/img/export_control.png"));
-        btnExportEx.setImageSize(32, 32);
+       RoundedButton btnExportEx = new RoundedButton("Xuất Excell",ImageLoader.loadResourceImage("/img/xuatExcel.png"));
+       btnExportEx.setImageSize(32, 32);
+        RoundedButton btnImportEx = new RoundedButton("Nhập Excell", ImageLoader.loadResourceImage("/img/export_control.png"));
+        btnImportEx.setImageSize(32, 32);
         RoundedButton btnRefresh = new RoundedButton("Làm mới", ImageLoader.loadResourceImage("/img/refresh_control.png"));
         btnRefresh.setImageSize(32, 32);
 
@@ -227,7 +231,7 @@ public class TopProductPanel {//panel các nút
                 JOptionPane.showMessageDialog(null, "Vui lòng chọn một sản phẩm để bật!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
             }
         });
-        btnExportEx.addActionListener(e -> {
+        btnImportEx.addActionListener(e -> {
             JFileChooser fileChooser = new JFileChooser();
             fileChooser.setCurrentDirectory(new File("D:/Doanjava/QuanLyBanLaptop/src/main/resources/importData"));
             int result = fileChooser.showOpenDialog(null);
@@ -309,7 +313,44 @@ public class TopProductPanel {//panel các nút
                 }
             }
         });
-
+        btnExportEx.addActionListener(e -> {
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setDialogTitle("Chọn nơi lưu file Excel");
+            fileChooser.setFileFilter(new FileNameExtensionFilter("Excel Files", "xlsx"));
+        
+            int userSelection = fileChooser.showSaveDialog(buttonControlPanel); // Đổi this -> buttonControlPanel
+            if (userSelection == JFileChooser.APPROVE_OPTION) {
+                String filePath = fileChooser.getSelectedFile().getAbsolutePath();
+                if (!filePath.endsWith(".xlsx")) {
+                    filePath += ".xlsx";
+                }
+        
+                // Lấy dữ liệu từ bảng
+                javax.swing.table.TableModel model = ProductTable.getTableModel();
+                java.util.List<String> headers = new ArrayList<>();
+                for (int i = 0; i < model.getColumnCount(); i++) {
+                    headers.add(model.getColumnName(i));
+                }
+        
+                java.util.List<java.util.List<Object>> data = new ArrayList<>();
+                for (int i = 0; i < model.getRowCount(); i++) {
+                    java.util.List<Object> row = new ArrayList<>();
+                    for (int j = 0; j < model.getColumnCount(); j++) {
+                        row.add(model.getValueAt(i, j));
+                    }
+                    data.add(row);
+                }
+        
+                try {
+                    ExcelExporter.exportToExcel(headers, data, "DanhSachSanPham", filePath);
+                    JOptionPane.showMessageDialog(buttonControlPanel, "Xuất Excel thành công!");
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(buttonControlPanel, "Lỗi khi xuất Excel: " + ex.getMessage());
+                    ex.printStackTrace();
+                }
+            }
+        });
+        
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.gridy = 0;
@@ -322,10 +363,11 @@ public class TopProductPanel {//panel các nút
         gbc.gridx = 2; buttonControlPanel.add(btnRestore, gbc);
         gbc.gridx = 3; buttonControlPanel.add(btnSeeDetail, gbc);
         gbc.gridx = 4; buttonControlPanel.add(btnSeeImeis, gbc);
-        gbc.gridx = 5; buttonControlPanel.add(btnExportEx, gbc);
-        gbc.gridx = 6; buttonControlPanel.add(btnRefresh, gbc);
-        gbc.gridx = 7; gbc.gridwidth = 2; buttonControlPanel.add(statuscb, gbc);
-        gbc.gridx = 9; gbc.gridwidth = 4; buttonControlPanel.add(tfName, gbc);
+        gbc.gridx = 5; buttonControlPanel.add(btnImportEx, gbc);
+        gbc.gridx = 6; buttonControlPanel.add(btnExportEx, gbc);
+        gbc.gridx = 7; buttonControlPanel.add(btnRefresh, gbc);
+        gbc.gridx = 8; gbc.gridwidth = 2; buttonControlPanel.add(statuscb, gbc);
+        gbc.gridx = 10; gbc.gridwidth = 4; buttonControlPanel.add(tfName, gbc);
 
         return buttonControlPanel;
     }
