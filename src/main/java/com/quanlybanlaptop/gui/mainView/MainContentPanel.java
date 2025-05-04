@@ -1,6 +1,7 @@
 package com.quanlybanlaptop.gui.mainView;
 
 
+import com.quanlybanlaptop.Login;
 import com.quanlybanlaptop.bus.*;
 import com.quanlybanlaptop.dto.AdminDTO;
 import com.quanlybanlaptop.gui.BillExport.ExportCtn;
@@ -200,6 +201,14 @@ public class MainContentPanel extends JPanel implements ContentChangeListener {
 //                break;
             case "Khách hàng":
                 CustomerPanel.createCustomerContent(contentArea, customerBUS); // Gọi đúng phương thức và truyền customerBUS
+                break;
+
+            case "Đăng xuất":
+                int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn đăng xuất?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+                if (confirm == JOptionPane.YES_OPTION) {
+                    parentFrame.dispose();
+                    new Login().setVisible(true);
+                }
                 break;
             default:
                 createDefaultContent(contentArea, menuItem);
