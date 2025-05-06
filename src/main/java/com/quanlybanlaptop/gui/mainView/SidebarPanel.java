@@ -172,6 +172,7 @@ public class SidebarPanel extends JPanel {
             }
         });
     }
+    
 
     private void updateUserFontSize() {
         int width = getWidth();

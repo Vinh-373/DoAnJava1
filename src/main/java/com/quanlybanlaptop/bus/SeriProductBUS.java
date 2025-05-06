@@ -38,6 +38,10 @@ public class SeriProductBUS {
     public SeriProductDTO getByNumSeri(String seri) {
         return dao.getByNumSeri(seri);
     }
+    public SeriProductDTO getByNumSeri2(String seri) {
+        return dao.getByNumSeri2(seri);
+    }
+    
 
     public boolean updateSeriProduct(ArrayList<String> listSeri, int status) {
         return dao.updateSeriProduct(listSeri, status);
@@ -45,5 +49,8 @@ public class SeriProductBUS {
 
     public boolean deleteSeriProduct(String seri) {
         return dao.deleteSeriProduct(seri);
+    }
+    public boolean updateStatusTo3BySeri(String numSeri) {
+        return dao.updateStatusTo3BySeri(numSeri);
     }
 }

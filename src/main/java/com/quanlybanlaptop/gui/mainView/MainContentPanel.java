@@ -1,7 +1,5 @@
 package com.quanlybanlaptop.gui.mainView;
 
-
-import com.quanlybanlaptop.Login;
 import com.quanlybanlaptop.bus.*;
 import com.quanlybanlaptop.dto.AdminDTO;
 import com.quanlybanlaptop.gui.BillExport.ExportCtn;
@@ -10,17 +8,19 @@ import com.quanlybanlaptop.gui.category_brand.CategoryBrandPanel;
 import com.quanlybanlaptop.gui.product.ProductPanel;
 import com.quanlybanlaptop.gui.component.*;
 import com.quanlybanlaptop.gui.customer.CustomerPanel;
+import com.quanlybanlaptop.gui.insurance.InsurancePanel;
 import com.quanlybanlaptop.gui.stock.StockPanel;
+import com.quanlybanlaptop.gui.thongKe.ThongKePanel;
+import com.quanlybanlaptop.Login;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.net.URL;
 import java.sql.SQLException;
 
 public class MainContentPanel extends JPanel implements ContentChangeListener {
-    private JPanel contentArea, headerPanel,windowControlPanel,topPanel;
+    private JPanel contentArea, headerPanel, windowControlPanel, topPanel;
     private ProductBUS productBUS;
     private CategoryBUS categoryBUS;
     private CompanyBUS companyBUS;
@@ -29,11 +29,29 @@ public class MainContentPanel extends JPanel implements ContentChangeListener {
     private AdminDTO adminDTO;
     private BillExportBUS billExportBUS;
     private BillExDetailBUS billExDetailBUS;
-    private CustomerBUS customerBUS; 
+    private CustomerBUS customerBUS;
+    private InsuranceBUS insuranceBUS;
+    private MainFrame parentFrame; // Thay JFrame thành MainFrame
+    private InsuranceClaimBUS insuranceClaimBUS;
+    private ThongKeBUS thongKeBUS;
+    private ThongKePanel thongKePanel;
 
-    private JFrame parentFrame;
-
-    public MainContentPanel(AdminDTO adminDTO, ProductBUS productBUS, CategoryBUS categoryBUS, CompanyBUS companyBUS, BillImportBUS billImportBUS, SeriProductBUS seriProductBUS, BillExportBUS billExportBUS, BillExDetailBUS billExDetailBUS, CustomerBUS customerBUS, JFrame parentFrame) {
+    public MainContentPanel(
+            InsuranceBUS insuranceBUS,
+            AdminDTO adminDTO,
+            ProductBUS productBUS,
+            CategoryBUS categoryBUS,
+            CompanyBUS companyBUS,
+            BillImportBUS billImportBUS,
+            SeriProductBUS seriProductBUS,
+            BillExportBUS billExportBUS,
+            BillExDetailBUS billExDetailBUS,
+            CustomerBUS customerBUS,
+            InsuranceClaimBUS insuranceClaimBUS,
+            ThongKeBUS thongKeBUS,
+            MainFrame parentFrame // Thay JFrame thành MainFrame
+    ) {
+        this.insuranceBUS = insuranceBUS;
         this.productBUS = productBUS;
         this.categoryBUS = categoryBUS;
         this.companyBUS = companyBUS;
@@ -44,6 +62,9 @@ public class MainContentPanel extends JPanel implements ContentChangeListener {
         this.billExDetailBUS = billExDetailBUS;
         this.adminDTO = adminDTO;
         this.customerBUS = customerBUS;
+        this.insuranceClaimBUS = insuranceClaimBUS;
+        this.thongKeBUS = thongKeBUS;
+        this.thongKePanel = new ThongKePanel(thongKeBUS);
         setLayout(new BorderLayout());
         setBackground(new Color(244, 241, 241));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -53,7 +74,6 @@ public class MainContentPanel extends JPanel implements ContentChangeListener {
         contentArea.setBackground(Color.WHITE);
 
         topPanel = new JPanel(new BorderLayout());
-//        topPanel.add(windowControlPanel, BorderLayout.NORTH);
         topPanel.add(headerPanel, BorderLayout.CENTER);
 
         add(topPanel, BorderLayout.NORTH);
@@ -63,27 +83,24 @@ public class MainContentPanel extends JPanel implements ContentChangeListener {
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-                ProductPanel.adjustButtonPanelLayout(); // Điều chỉnh ProductPanel nếu cần
-                contentArea.revalidate();               // Cập nhật contentArea
+                ProductPanel.adjustButtonPanelLayout();
+                contentArea.revalidate();
                 contentArea.repaint();
-                MainContentPanel.this.revalidate();     // Cập nhật toàn bộ MainContentPanel
+                MainContentPanel.this.revalidate();
                 MainContentPanel.this.repaint();
             }
         });
     }
+
     private JPanel createWindowControlPanel() {
         JPanel controlPanel = new JPanel();
         controlPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 2));
         controlPanel.setBackground(new Color(244, 241, 241));
 
-        // Nút thu nhỏ
         JButton minimizeButton = new JButton("-");
         minimizeButton.setPreferredSize(new Dimension(30, 30));
-        minimizeButton.addActionListener(e -> {
-            parentFrame.setState(Frame.ICONIFIED);
-        });
+        minimizeButton.addActionListener(e -> parentFrame.setState(Frame.ICONIFIED));
 
-        // Nút fullscreen/restore
         JButton fullscreenButton = new JButton("□");
         fullscreenButton.setPreferredSize(new Dimension(30, 30));
         fullscreenButton.addActionListener(e -> {
@@ -91,36 +108,27 @@ public class MainContentPanel extends JPanel implements ContentChangeListener {
             GraphicsDevice gd = ge.getDefaultScreenDevice();
 
             if (gd.getFullScreenWindow() == parentFrame) {
-                // Thoát fullscreen
                 gd.setFullScreenWindow(null);
                 parentFrame.dispose();
-                parentFrame.setUndecorated(false); // Khôi phục thanh tiêu đề
-                parentFrame.setSize(1800, 950); // Đặt kích thước mặc định
-                parentFrame.setLocationRelativeTo(null); // Căn giữa màn hình
+                parentFrame.setUndecorated(false);
+                parentFrame.setSize(1400, 750);
+                parentFrame.setLocationRelativeTo(null);
                 parentFrame.setVisible(true);
-
-                // Cập nhật lại toàn bộ giao diện
-                MainContentPanel.this.revalidate(); // Cập nhật bố cục của MainContentPanel
-                MainContentPanel.this.repaint();    // Vẽ lại giao diện
+                MainContentPanel.this.revalidate();
+                MainContentPanel.this.repaint();
             } else {
-                // Vào fullscreen
                 parentFrame.dispose();
-                parentFrame.setUndecorated(true); // Loại bỏ thanh tiêu đề
+                parentFrame.setUndecorated(true);
                 gd.setFullScreenWindow(parentFrame);
                 parentFrame.setVisible(true);
-
-                // Cập nhật lại toàn bộ giao diện
                 MainContentPanel.this.revalidate();
                 MainContentPanel.this.repaint();
             }
         });
 
-        // Nút đóng
         JButton closeButton = new JButton("×");
         closeButton.setPreferredSize(new Dimension(30, 30));
-        closeButton.addActionListener(e -> {
-            parentFrame.dispose();
-        });
+        closeButton.addActionListener(e -> parentFrame.dispose());
 
         for (JButton button : new JButton[]{minimizeButton, fullscreenButton, closeButton}) {
             button.setFont(new Font("Arial", Font.PLAIN, 16));
@@ -136,6 +144,7 @@ public class MainContentPanel extends JPanel implements ContentChangeListener {
 
         return controlPanel;
     }
+
     private JPanel createHeaderPanel() {
         JPanel headerPanel = new JPanel();
         headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.Y_AXIS));
@@ -167,8 +176,7 @@ public class MainContentPanel extends JPanel implements ContentChangeListener {
 
     private void updateContent(String menuItem) {
         contentArea.removeAll();
-    
-        // Xử lý headerPanel
+
         if (menuItem.equals("Trang chủ")) {
             if (headerPanel.getParent() == null) {
                 topPanel.add(headerPanel, BorderLayout.CENTER);
@@ -176,7 +184,7 @@ public class MainContentPanel extends JPanel implements ContentChangeListener {
         } else {
             topPanel.removeAll();
         }
-    
+
         switch (menuItem) {
             case "Trang chủ":
                 createHomeContent(contentArea);
@@ -196,25 +204,27 @@ public class MainContentPanel extends JPanel implements ContentChangeListener {
             case "Tài khoản":
                 AccountPanel.createAccountPanel(contentArea);
                 break;
-//            case "Bảo hành":
-//                InsurancePanel.createPanel(contentArea);
-//                break;
             case "Khách hàng":
-                CustomerPanel.createCustomerContent(contentArea, customerBUS); // Gọi đúng phương thức và truyền customerBUS
+                CustomerPanel.createCustomerContent(contentArea, customerBUS);
                 break;
-
+            case "Bảo hành":
+                contentArea.setLayout(new BorderLayout());
+                InsurancePanel insurancePanel = new InsurancePanel(insuranceBUS, seriProductBUS, insuranceClaimBUS);
+                contentArea.add(insurancePanel, BorderLayout.CENTER);
+                break;
+            case "Thống kê":
+                contentArea.setLayout(new BorderLayout());
+                ThongKePanel thongKePanel = new ThongKePanel(thongKeBUS);
+                contentArea.add(thongKePanel, BorderLayout.CENTER);
+                break;
             case "Đăng xuất":
-                int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn đăng xuất?", "Xác nhận", JOptionPane.YES_NO_OPTION);
-                if (confirm == JOptionPane.YES_OPTION) {
-                    parentFrame.dispose();
-                    new Login().setVisible(true);
-                }
+                logout();
                 break;
             default:
                 createDefaultContent(contentArea, menuItem);
                 break;
         }
-    
+
         topPanel.revalidate();
         topPanel.repaint();
         contentArea.revalidate();
@@ -242,7 +252,6 @@ public class MainContentPanel extends JPanel implements ContentChangeListener {
                 new ImageIcon(getClass().getResource("/img/efficiency_icon.png")),
                 "Hỗ trợ quản lý điện thoại nhanh chóng và hiệu quả hơn."
         ));
-
     }
 
     private void createDefaultContent(JPanel contentArea, String menuItem) {
@@ -250,5 +259,21 @@ public class MainContentPanel extends JPanel implements ContentChangeListener {
         JLabel label = new JLabel("Chức năng: " + menuItem + " đang phát triển!", SwingConstants.CENTER);
         label.setFont(new Font("Arial", Font.PLAIN, 20));
         contentArea.add(label);
+    }
+
+    private void logout() {
+        int confirm = JOptionPane.showConfirmDialog(
+                this,
+                "Bạn có chắc chắn muốn đăng xuất?",
+                "Xác nhận đăng xuất",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+        );
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            parentFrame.dispose();
+            Login loginFrame = new Login();
+            loginFrame.setVisible(true);
+        }
     }
 }

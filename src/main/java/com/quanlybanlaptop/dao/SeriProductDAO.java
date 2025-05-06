@@ -73,7 +73,18 @@ public class SeriProductDAO {
         }
         return null;
     }
-
+    public SeriProductDTO getByNumSeri2(String numSeri) {
+        String sql = "SELECT * FROM SERI_PRODUCT WHERE num_seri = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, numSeri);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) return createDTO(rs);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
     public boolean updateSeriProduct(ArrayList<String> seriProduct, int status) {
         String sql = "UPDATE SERI_PRODUCT SET status = ? WHERE num_seri = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -110,6 +121,17 @@ public class SeriProductDAO {
         } catch (SQLException e) {
             e.printStackTrace();
             return false; // Lỗi xảy ra → coi như không tồn tại (hoặc bạn có thể xử lý riêng)
+        }
+    }
+    public boolean updateStatusTo3BySeri(String numSeri) {
+        String sql = "UPDATE SERI_PRODUCT SET status = 3 WHERE num_seri = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, numSeri);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
     }
 
