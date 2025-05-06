@@ -102,9 +102,15 @@ public class Login extends JFrame {
                             BillExDetailBUS billExDetailBUS = new BillExDetailBUS(billExDetailDAO);
                             CustomerDAO customerDAO = new CustomerDAO();
                             CustomerBUS customerBUS = new CustomerBUS();
-
-                            // Truyền customerBUS vào MainFrame
+                            InsuranceDAO insuranceDAO = new InsuranceDAO(conn);
+                            InsuranceBUS insuranceBUS = new InsuranceBUS(insuranceDAO);
+                            InsuranceClaimDAO insuranceClaimDAO = new InsuranceClaimDAO(conn);
+                            InsuranceClaimBUS insuranceClaimBUS = new InsuranceClaimBUS(insuranceClaimDAO);
+                            ThongKeDAO thongKeDAO = new ThongKeDAO(conn);
+                            ThongKeBUS thongKeBUS = new ThongKeBUS(thongKeDAO);
+                            // Truyền insuranceBUS và các BUS khác vào MainFrame
                             MainFrame mainFrame = new MainFrame(
+                                insuranceBUS,
                                 admin,
                                 productBUS,
                                 categoryBUS,
@@ -113,7 +119,10 @@ public class Login extends JFrame {
                                 seriProductBUS,
                                 billExportBUS,
                                 billExDetailBUS,
-                                customerBUS
+                                customerBUS,
+                                
+                                insuranceClaimBUS// Truyền insuranceClaimBUS vào MainFrame
+                                , thongKeBUS // Truyền thongKeBUS vào MainFrame
                             );
                             mainFrame.setVisible(true);
                         } catch (Exception ex) {
