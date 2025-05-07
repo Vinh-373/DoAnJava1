@@ -11,6 +11,8 @@ import com.quanlybanlaptop.dto.SeriProductDTO;
 import com.quanlybanlaptop.gui.component.RoundedButton;
 import com.quanlybanlaptop.gui.component.RoundedComponent;
 import com.quanlybanlaptop.gui.product.ProductTable;
+
+import org.apache.poi.hpsf.Decimal;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -27,7 +29,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class ImportStock {
-    private static JTextField txtQuantity;
+    private static JTextField txtQuantity, txtGiaNhap;
     private static JTextArea txtSeriArea;
     private static ProductDTO productDTO;
 
@@ -75,7 +77,12 @@ public class ImportStock {
         JPanel excelPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         RoundedButton btnImportExcel = new RoundedButton("Nhập Excel");
         btnImportExcel.setPreferredSize(new Dimension(120, 30));
+        JLabel gianhap = new JLabel("Đơn giá:");
+        txtGiaNhap = RoundedComponent.createRoundedTextField(5);
+        txtGiaNhap.setPreferredSize(new Dimension(100, 30));
         excelPanel.add(btnImportExcel);
+        excelPanel.add(gianhap);
+        excelPanel.add(txtGiaNhap);
         excelPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
         excelPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
@@ -107,6 +114,7 @@ public class ImportStock {
         // Xử lý nút OK
         btnOk.addActionListener(e -> {
             String soLuongStr = txtQuantity.getText().trim();
+            BigDecimal giaNhap = new BigDecimal(txtGiaNhap.getText().trim());
             String[] danhSachSeri = txtSeriArea.getText().trim().split("\\n");
 
             // Kiểm tra dữ liệu
@@ -114,7 +122,11 @@ public class ImportStock {
                 JOptionPane.showMessageDialog(importDialog, "Vui lòng nhập số lượng.");
                 return;
             }
+            if(giaNhap.compareTo(BigDecimal.ZERO) <= 0 || giaNhap == null) {
+                JOptionPane.showMessageDialog(importDialog, "Giá nhập không hợp lệ.");
+                return;
 
+            }
             int soLuong;
             try {
                 soLuong = Integer.parseInt(soLuongStr);
@@ -144,15 +156,14 @@ public class ImportStock {
                 boolean themBill = false;
                 try {
                     ProductDTO productDTO = productBUS.getProductById(idProduct);
-                    BigDecimal unitPrice = productDTO.getPrice();
-                    BigDecimal totalPrice = unitPrice.multiply(BigDecimal.valueOf(soLuong));
+                    BigDecimal totalPrice = giaNhap.multiply(BigDecimal.valueOf(soLuong));
                     Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
 
                     BillImportDTO billImportDTO = new BillImportDTO(
                             0,
                             adminDTO.getId(),
                             productDTO.getIdProduct(),
-                            unitPrice,
+                            giaNhap,
                             totalPrice,
                             soLuong * -1,
                             currentTimestamp,

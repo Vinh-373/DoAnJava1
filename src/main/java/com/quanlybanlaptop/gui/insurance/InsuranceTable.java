@@ -3,6 +3,7 @@ package com.quanlybanlaptop.gui.insurance;
 import com.quanlybanlaptop.bus.InsuranceBUS;
 import com.quanlybanlaptop.bus.InsuranceClaimBUS;
 import com.quanlybanlaptop.dto.InsuranceDTO;
+import com.quanlybanlaptop.gui.component.RoundedButton;
 import com.quanlybanlaptop.dto.InsuranceClaimDTO;
 
 import javax.swing.*;
@@ -21,6 +22,7 @@ public class InsuranceTable extends JPanel {
     private JButton btnSuaTrangThai;
 
     public InsuranceTable(InsuranceBUS insuranceBUS, InsuranceClaimBUS insuranceClaimBUS) {
+
         this.insuranceBUS = insuranceBUS;
         this.insuranceClaimBUS = insuranceClaimBUS;
         setLayout(new BorderLayout());

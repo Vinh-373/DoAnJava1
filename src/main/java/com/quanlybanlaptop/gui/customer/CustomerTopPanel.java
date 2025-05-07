@@ -41,6 +41,7 @@ public class CustomerTopPanel extends JPanel {
                 AddCustomer addFrame = new AddCustomer();
                 addFrame.setVisible(true);
             });
+            CustomerTable.loadCustomerData(customerBUS, null);
         });
 
         btnEdit = new RoundedButton("Sửa", ImageLoader.loadResourceImage("/img/edit_control.png"));
@@ -53,6 +54,7 @@ public class CustomerTopPanel extends JPanel {
                 if (customer != null) {
                     EditCustomer editFrame = new EditCustomer(customer);
                     editFrame.setVisible(true);
+
                 } else {
                     JOptionPane.showMessageDialog(null, "Không tìm thấy thông tin khách hàng.");
                 }
@@ -80,6 +82,7 @@ public class CustomerTopPanel extends JPanel {
             } else {
                 JOptionPane.showMessageDialog(null, "Vui lòng chọn khách hàng cần khóa.");
             }
+            CustomerTable.loadCustomerData(customerBUS, null);
         });
 
         btnExportExcel = new RoundedButton("Xuất Excel", ImageLoader.loadResourceImage("/img/xuatExcel.png"));
@@ -162,6 +165,8 @@ public class CustomerTopPanel extends JPanel {
             try {
                 ExcelExporter.exportToExcel(headers, data, "KhachHang", filePath);
                 JOptionPane.showMessageDialog(this, "Xuất Excel thành công!");
+            CustomerTable.loadCustomerData(customerBUS, null);
+
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Lỗi khi xuất Excel: " + ex.getMessage());
             }

@@ -20,7 +20,7 @@ public class StockTableR {
     public static JLabel titleLabel;
     public static JPanel createStockPanel(BillImportBUS billImportBUS) {
         JPanel panel = new JPanel(new BorderLayout());
-        String[] columnNames = {"MÃ SP", "TÊN NHÂN VIÊN", "TỔNG SP","NGÀY XUẤT"};
+        String[] columnNames = {"MÃ SP", "TÊN NHÂN VIÊN", "TỔNG SP","NGÀY XUẤT","ĐƠN GIÁ"};
         tableModel = new DefaultTableModel(columnNames, 0);
 
         importTable = new RoundedTable(tableModel);
@@ -50,9 +50,10 @@ public class StockTableR {
                         titleLabel.setText("LỊCH SỬ PHIẾU NHẬP KHO");
                         Object[] rowData = {
                                 bill.getIdProduct(),
-                                bill.getNameAdmin(),
+                                bill.getNameAdmin()+"-" + bill.getIdAdmin(),
                                 bill.getQuantity()*-1,
                                 bill.getImportDate(),
+                                bill.getUnitPrice()
                         };
                         tableModel.addRow(rowData);
                     }

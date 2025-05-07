@@ -124,6 +124,8 @@ public class EditCustomer extends JFrame {
 
             if (success) {
                 JOptionPane.showMessageDialog(this, "Cập nhật khách hàng thành công!");
+            CustomerTable.loadCustomerData(customerBUS, null);
+
                 dispose();
             } else {
                 JOptionPane.showMessageDialog(this, "Cập nhật khách hàng thất bại.");

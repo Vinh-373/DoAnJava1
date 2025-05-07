@@ -30,7 +30,7 @@ GO
 -- Tạo bảng CATEGORY
 CREATE TABLE [CATEGORY] (
     [id_category] INTEGER NOT NULL IDENTITY UNIQUE,
-    [name_category] VARCHAR(50) NOT NULL,
+    [name_category] NVARCHAR(100) NOT NULL,
     [status] INTEGER NOT NULL,
     PRIMARY KEY([id_category])
 );
@@ -272,6 +272,28 @@ ADD CONSTRAINT FK_INSURANCE_CLAIM_SERI
     ON UPDATE NO ACTION
     ON DELETE NO ACTION;
 GO
+-- Thêm dữ liệu vào bảng CATEGORY
+INSERT INTO CATEGORY (name_category, status) VALUES
+('Laptop Gaming', 1),        -- id = 1
+('Laptop Văn Phòng', 1),     -- id = 2
+('Laptop Siêu Mỏng', 1);     -- id = 3
 
 
-         
+-- Thêm dữ liệu vào bảng COMPANY
+INSERT INTO COMPANY (name_company, address, contact, status) VALUES
+('Dell', 'USA', '1900-123-456', 1),
+('HP', 'USA', '1900-654-321', 1),
+('Lenovo', 'China', '1800-987-654', 1),
+('Apple', 'USA', '1800-111-222', 1),
+('ASUS', 'Taiwan', '1800-333-444', 1),
+('Acer', 'Taiwan', '1800-555-666', 1),
+('Microsoft', 'USA', '1800-777-888', 1),
+('Razer', 'Singapore', '1800-999-000', 1),
+('Framework', 'USA', '1800-246-810', 1);
+
+INSERT INTO ADMIN (name, gender, email, contact, password, status) VALUES
+('Nguyen Thi Mai', 'Female', 'nguyenmai@gmail.com', '0901234567', 'password123', 1),
+('Tran Minh Tu', 'Male', 'tranminhtu@gmail.com', '0907654321', 'password456', 1);
+GO
+select * FROM BILL_IMPORT
+select * FROM BILL_EXPORT

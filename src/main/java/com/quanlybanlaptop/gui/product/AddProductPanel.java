@@ -167,7 +167,7 @@ public class AddProductPanel {//Panel thêm sp
                     int idCategory = ((ComboItem) cmbLoai.getSelectedItem()).getId();
                     int idCompany = ((ComboItem) cmbHang.getSelectedItem()).getId();
                     String sizeScreen = txtScreen.getText();
-                    String image = "/img/" + fileName.trim();
+                    String image = fileName.trim();
                     ProductDTO productInput = new ProductDTO(
                             idProduct, name, cpu, ram, rom, graphicsCard, battery, weight,
                             price, quantity, quantityStock, idCategory, idCompany, image, sizeScreen, operatingSystem, status, nameCategory, nameCompany
@@ -208,7 +208,7 @@ public class AddProductPanel {//Panel thêm sp
                             productDTO.setNameCategory(((ComboItem) cmbLoai.getSelectedItem()).toString());
                             productDTO.setIdCompany(((ComboItem) cmbHang.getSelectedItem()).getId());
                             productDTO.setNameCompany(((ComboItem) cmbHang.getSelectedItem()).toString());
-                            productDTO.setImage("/img/" + fileName.trim());
+                            productDTO.setImage(fileName.trim());
 
                             boolean updated = productBUS.updateProduct(productDTO);
                             if (updated) {
