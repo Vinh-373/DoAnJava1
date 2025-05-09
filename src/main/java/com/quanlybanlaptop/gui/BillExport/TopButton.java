@@ -1,10 +1,16 @@
 package com.quanlybanlaptop.gui.BillExport;
 
-import com.itextpdf.text.Paragraph;
+import com.quanlybanlaptop.bus.AuthoritiesBUS;
 import com.quanlybanlaptop.bus.BillExDetailBUS;
 import com.quanlybanlaptop.bus.BillExportBUS;
+import com.quanlybanlaptop.bus.CTQBUS;
 import com.quanlybanlaptop.bus.ProductBUS;
+import com.quanlybanlaptop.bus.RoleBUS;
 import com.quanlybanlaptop.bus.SeriProductBUS;
+import com.quanlybanlaptop.dao.AuthoritiesDAO;
+import com.quanlybanlaptop.dao.CTQDAO;
+import com.quanlybanlaptop.dao.DatabaseConnection;
+import com.quanlybanlaptop.dao.RoleDAO;
 import com.quanlybanlaptop.dto.AdminDTO;
 import com.quanlybanlaptop.dto.BillExDetailDTO;
 import com.quanlybanlaptop.dto.BillExportDTO;
@@ -12,13 +18,9 @@ import com.quanlybanlaptop.gui.component.RoundedButton;
 import com.quanlybanlaptop.gui.component.RoundedComponent;
 import com.quanlybanlaptop.util.ImageLoader;
 import com.toedter.calendar.JDateChooser;
-import com.itextpdf.text.Document;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
-import com.itextpdf.text.PageSize;
+
 import java.io.FileOutputStream;
 import com.itextpdf.text.*;
 import javax.swing.*;
@@ -30,6 +32,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.ConnectException;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -45,18 +49,25 @@ public class TopButton {
         JPanel panel = new JPanel(new GridBagLayout());
         panel.setBackground(Color.WHITE);
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        Connection cnn = DatabaseConnection.getConnection();
+     
+        CTQDAO ctqDAO = new CTQDAO(cnn);
+        CTQBUS ctqBUS = new CTQBUS(ctqDAO);
 
         // Khởi tạo các nút
         RoundedButton btnAdd = new RoundedButton("Thêm", ImageLoader.loadResourceImage("/img/add_control.png"));
         btnAdd.setImageSize(32, 32);
-        RoundedButton btnEdit = new RoundedButton("Sửa", ImageLoader.loadResourceImage("/img/edit_control.png"));
-        btnEdit.setImageSize(32, 32);
+        btnAdd.setEnabled(ctqBUS.isChecked(adminDTO.getIdRole(), 5, 1));
+        // RoundedButton btnEdit = new RoundedButton("Sửa", ImageLoader.loadResourceImage("/img/edit_control.png"));
+        // btnEdit.setImageSize(32, 32);
         RoundedButton btnDelete = new RoundedButton("Xóa", ImageLoader.loadResourceImage("/img/delete_control.png"));
         btnDelete.setImageSize(32, 32);
+        btnDelete.setEnabled(ctqBUS.isChecked(adminDTO.getIdRole(), 5, 2));
         RoundedButton btnRefresh = new RoundedButton("Làm mới", ImageLoader.loadResourceImage("/img/refresh_control.png"));
         btnRefresh.setImageSize(32, 32);
         RoundedButton btnExPFD = new RoundedButton("Xuất PFD", ImageLoader.loadResourceImage("/img/pdf.png"));
         btnExPFD.setImageSize(32, 32);
+        btnExPFD.setEnabled(ctqBUS.isChecked(adminDTO.getIdRole(), 5, 3));
 
         // Khởi tạo các thành phần tìm kiếm
         String[] op = {"Mã phiếu", "Nhân viên", "Khách hàng"};
@@ -110,6 +121,10 @@ public class TopButton {
 
             if (ExportRight.getTable().getRowCount() == 0) {
                 JOptionPane.showMessageDialog(null, "Chi tiết hóa đơn không được để trống");
+                return;
+            }
+            if(ExportRight.getTxtKH().getText().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Vui lòng nhập mã khách hàng");
                 return;
             }
 
@@ -246,6 +261,10 @@ public class TopButton {
             }
         });
         btnExPFD.addActionListener(e->{
+            if(ExportRight.getTxtNV().getText().isEmpty()){
+                JOptionPane.showMessageDialog(null, "Vui lòng chọn hóa đơn để xuất");
+                return;
+            }
             Document document = new Document(PageSize.A4, 36, 36, 36, 36);
 
             try {
@@ -319,16 +338,15 @@ public class TopButton {
         gbc.gridwidth = 1;
 
         gbc.gridx = 0; panel.add(btnAdd, gbc);
-        gbc.gridx = 1; panel.add(btnEdit, gbc);
-        gbc.gridx = 2; panel.add(btnDelete, gbc);
-        gbc.gridx = 3; panel.add(btnRefresh, gbc);
-        gbc.gridx = 4; panel.add(btnExPFD, gbc);
-        gbc.gridx = 5; gbc.weightx = 0; panel.add(fromLb, gbc);
-        gbc.gridx = 6; gbc.weightx = 0; panel.add(dateFromChooser, gbc);
-        gbc.gridx = 7; gbc.weightx = 0; panel.add(toLb, gbc);
-        gbc.gridx = 8; gbc.weightx = 0; panel.add(dateToChooser, gbc);
-        gbc.gridx = 9; gbc.weightx = 0; panel.add(cmb, gbc);
-        gbc.gridx = 10; gbc.gridwidth = 1; gbc.weightx = 1.0; panel.add(txtSearch, gbc);
+        gbc.gridx = 1; panel.add(btnDelete, gbc);
+        gbc.gridx = 2; panel.add(btnRefresh, gbc);
+        gbc.gridx = 3; panel.add(btnExPFD, gbc);
+        gbc.gridx = 4; gbc.weightx = 0; panel.add(fromLb, gbc);
+        gbc.gridx = 5; gbc.weightx = 0; panel.add(dateFromChooser, gbc);
+        gbc.gridx = 6; gbc.weightx = 0; panel.add(toLb, gbc);
+        gbc.gridx = 7; gbc.weightx = 0; panel.add(dateToChooser, gbc);
+        gbc.gridx = 8; gbc.weightx = 0; panel.add(cmb, gbc);
+        gbc.gridx = 9; gbc.gridwidth = 1; gbc.weightx = 1.0; panel.add(txtSearch, gbc);
 
         return panel;
     }

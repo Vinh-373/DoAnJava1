@@ -4,14 +4,23 @@ import com.quanlybanlaptop.gui.component.RoundedButton;
 import com.quanlybanlaptop.gui.component.RoundedComponent;
 import com.quanlybanlaptop.util.ExcelExporter;
 import com.quanlybanlaptop.util.ImageLoader;
+import com.quanlybanlaptop.bus.AuthoritiesBUS;
+import com.quanlybanlaptop.bus.CTQBUS;
 import com.quanlybanlaptop.bus.InsuranceBUS;
 import com.quanlybanlaptop.bus.SeriProductBUS;
+import com.quanlybanlaptop.dao.AuthoritiesDAO;
+import com.quanlybanlaptop.dao.CTQDAO;
+import com.quanlybanlaptop.dao.DatabaseConnection;
+import com.quanlybanlaptop.dao.RoleDAO;
+import com.quanlybanlaptop.dto.AdminDTO;
 import com.quanlybanlaptop.dto.InsuranceClaimDTO;
 import com.quanlybanlaptop.dto.InsuranceDTO;
 import com.quanlybanlaptop.bus.InsuranceClaimBUS;
+import com.quanlybanlaptop.bus.RoleBUS;
 
 import javax.swing.*;
 import java.awt.*;
+import java.sql.Connection;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
@@ -33,7 +42,7 @@ public class InsuranceTop extends JPanel {
     private InsuranceClaimBUS insuranceClaimBUS;
     private InsuranceTable insuranceTable;
 
-    public InsuranceTop(InsuranceBUS insuranceBUS, SeriProductBUS seriProductBUS, InsuranceClaimBUS insuranceClaimBUS, InsuranceTable insuranceTable) {
+    public InsuranceTop(AdminDTO adminDTO,InsuranceBUS insuranceBUS, SeriProductBUS seriProductBUS, InsuranceClaimBUS insuranceClaimBUS, InsuranceTable insuranceTable) {
         this.insuranceBUS = insuranceBUS;
         this.seriProductBUS = seriProductBUS;
         this.insuranceClaimBUS = insuranceClaimBUS;
@@ -41,9 +50,13 @@ public class InsuranceTop extends JPanel {
         setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10));
         setBackground(Color.WHITE);
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
+          Connection cnn = DatabaseConnection.getConnection();
+        
+        CTQDAO ctqDAO = new CTQDAO(cnn);
+        CTQBUS ctqBUS = new CTQBUS(ctqDAO);
         btnAddInsurance = new RoundedButton("Thêm bảo hành", ImageLoader.loadResourceImage("/img/add_control.png"));
         btnAddInsurance.setImageSize(32, 32);
+        btnAddInsurance.setEnabled(ctqBUS.isChecked(adminDTO.getIdRole(), 3, 1));
         btnAddInsurance.addActionListener(e -> {
             JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
             InsuranceAdd dialog = new InsuranceAdd(parentFrame, insuranceBUS, seriProductBUS);
@@ -52,6 +65,7 @@ public class InsuranceTop extends JPanel {
 
         btnAddClaim = new RoundedButton("Thêm yêu cầu", ImageLoader.loadResourceImage("/img/addDo.png"));
         btnAddClaim.setImageSize(32, 32);
+        btnAddClaim.setEnabled(ctqBUS.isChecked(adminDTO.getIdRole(), 3, 3));
         btnAddClaim.addActionListener(e -> {
             JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
             InsuranceRequestAdd dialog = new InsuranceRequestAdd(parentFrame, insuranceBUS, insuranceClaimBUS);
@@ -60,6 +74,7 @@ public class InsuranceTop extends JPanel {
 
         btnEdit = new RoundedButton("Sửa", ImageLoader.loadResourceImage("/img/edit_control.png"));
         btnEdit.setImageSize(32, 32);
+        btnEdit.setEnabled(ctqBUS.isChecked(adminDTO.getIdRole(), 3, 2));
         btnEdit.addActionListener(e -> {
             int selectedRow = insuranceTable.getTable().getSelectedRow();
             if (selectedRow == -1) {

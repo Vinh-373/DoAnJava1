@@ -1,6 +1,8 @@
 package com.quanlybanlaptop.gui.customer;
 
 import com.quanlybanlaptop.bus.CustomerBUS;
+import com.quanlybanlaptop.dto.AdminDTO;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -8,12 +10,12 @@ public class CustomerPanel {
     private static JPanel buttonControlPanel;
     
 
-    public static void createCustomerContent(JPanel contentArea, CustomerBUS customerBUS) {
+    public static void createCustomerContent(AdminDTO adminDTO,JPanel contentArea, CustomerBUS customerBUS) {
         contentArea.setLayout(new BorderLayout());
         contentArea.setBackground(new Color(239, 237, 237));
 
         // Tạo panel điều khiển phía trên
-        buttonControlPanel = new CustomerTopPanel();
+        buttonControlPanel = new CustomerTopPanel(adminDTO);
         contentArea.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
         contentArea.add(buttonControlPanel, BorderLayout.NORTH);
 

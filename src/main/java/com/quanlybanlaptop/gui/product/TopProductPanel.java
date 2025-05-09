@@ -1,13 +1,22 @@
 package com.quanlybanlaptop.gui.product;
 
 
+import com.quanlybanlaptop.bus.AuthoritiesBUS;
+import com.quanlybanlaptop.bus.CTQBUS;
 import com.quanlybanlaptop.bus.CategoryBUS;
 import com.quanlybanlaptop.bus.CompanyBUS;
 import com.quanlybanlaptop.bus.SeriProductBUS;
+import com.quanlybanlaptop.dao.AuthoritiesDAO;
+import com.quanlybanlaptop.dao.CTQDAO;
+import com.quanlybanlaptop.dao.DatabaseConnection;
+import com.quanlybanlaptop.dao.RoleDAO;
+import com.quanlybanlaptop.dto.AdminDTO;
 import com.quanlybanlaptop.dto.ProductDTO;
+import com.quanlybanlaptop.dto.SeriProductDTO;
 import com.quanlybanlaptop.gui.component.*;
 import com.quanlybanlaptop.gui.customer.CustomerTable;
 import com.quanlybanlaptop.bus.ProductBUS;
+import com.quanlybanlaptop.bus.RoleBUS;
 import com.quanlybanlaptop.util.ExcelExporter;
 import com.quanlybanlaptop.util.ImageLoader;
 import java.io.File;
@@ -22,35 +31,53 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import java.awt.*;
 import java.math.BigDecimal;
+import java.net.ConnectException;
+
 import org.apache.poi.ss.usermodel.DataFormatter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class TopProductPanel {//panel các nút
 
-    public static JPanel createButtonPanel(ProductBUS productBUS, CategoryBUS categoryBUS, CompanyBUS companyBUS,SeriProductBUS seriProductBUS) {
+    public static JPanel createButtonPanel(AdminDTO adminDTO,ProductBUS productBUS, CategoryBUS categoryBUS, CompanyBUS companyBUS,SeriProductBUS seriProductBUS) {
+        Connection cnn = DatabaseConnection.getConnection();
+        CTQDAO ctqDAO = new CTQDAO(cnn);
+        CTQBUS ctqBUS = new CTQBUS(ctqDAO);
+
         JPanel buttonControlPanel = new JPanel(new GridBagLayout());
         buttonControlPanel.setBackground(Color.WHITE);
         buttonControlPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         RoundedButton btnAdd = new RoundedButton("Thêm", ImageLoader.loadResourceImage("/img/add_control.png"));
         btnAdd.setImageSize(32, 32);
+        btnAdd.setEnabled(ctqBUS.isChecked(adminDTO.getIdRole(),1, 1));
         RoundedButton btnEdit = new RoundedButton("Sửa", ImageLoader.loadResourceImage("/img/edit_control.png"));
         btnEdit.setImageSize(32, 32);
+        btnEdit.setEnabled(ctqBUS.isChecked(adminDTO.getIdRole(),1, 2));
         RoundedButton btnDelete = new RoundedButton("Tắt HĐ",  ImageLoader.loadResourceImage("/img/delete_control.png"));
         btnDelete.setImageSize(32, 32);
+        btnDelete.setEnabled(ctqBUS.isChecked(adminDTO.getIdRole(),1, 3));
         RoundedButton btnRestore = new RoundedButton("Bật HĐ",  ImageLoader.loadResourceImage("/img/restore_control.png"));
         btnRestore.setImageSize(32, 32);
         RoundedButton btnSeeDetail = new RoundedButton("Chi tiết",ImageLoader.loadResourceImage("/img/detail_control.png"));
         btnSeeDetail.setImageSize(32, 32);
+        btnSeeDetail.setEnabled(ctqBUS.isChecked(adminDTO.getIdRole(),1, 4));
+
         RoundedButton btnSeeImeis = new RoundedButton("Ds Seri", ImageLoader.loadResourceImage("/img/serinumber.png"));
         btnSeeImeis.setImageSize(32, 32);
+        btnSeeImeis.setEnabled(ctqBUS.isChecked(adminDTO.getIdRole(),1, 5));
+
        RoundedButton btnExportEx = new RoundedButton("Xuất Excell",ImageLoader.loadResourceImage("/img/xuatExcel.png"));
        btnExportEx.setImageSize(32, 32);
+       btnExportEx.setEnabled(ctqBUS.isChecked(adminDTO.getIdRole(),1, 6));
+
         RoundedButton btnImportEx = new RoundedButton("Nhập Excell", ImageLoader.loadResourceImage("/img/export_control.png"));
         btnImportEx.setImageSize(32, 32);
+        btnImportEx.setEnabled(ctqBUS.isChecked(adminDTO.getIdRole(),1, 7));
+
         RoundedButton btnRefresh = new RoundedButton("Làm mới", ImageLoader.loadResourceImage("/img/refresh_control.png"));
         btnRefresh.setImageSize(32, 32);
 
@@ -111,7 +138,13 @@ public class TopProductPanel {//panel các nút
                 if (confirm == JOptionPane.YES_OPTION) {
                     try {
                         boolean success = productBUS.setStatusProduct(idProduct,0);
-                        if (success) {
+                        ArrayList<SeriProductDTO> listSeri = seriProductBUS.getListSeriById(idProduct,1);
+                        ArrayList<String> listSeriString = new ArrayList<>();
+                        for (SeriProductDTO seri : listSeri) {
+                            listSeriString.add(seri.getNumSeri());
+                        }
+                        boolean success2 = seriProductBUS.updateSeriProduct(listSeriString,-1);
+                        if (success && success2) {
                             if(statuscb.equals("Hoạt động")){
                                 ProductTable.loadProductData(productBUS,0,tfName.getText());
                             }else{
@@ -191,7 +224,7 @@ public class TopProductPanel {//panel các nút
         });
         btnSeeImeis.addActionListener(e -> {
             try {
-                SeriListDialog.showDialog(productBUS,seriProductBUS);
+                SeriListDialog.showDialog(productBUS,seriProductBUS,(String) statuscb.getSelectedItem());
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
             }
@@ -217,7 +250,13 @@ public class TopProductPanel {//panel các nút
                 if (confirm == JOptionPane.YES_OPTION) {
                     try {
                         boolean success = productBUS.setStatusProduct(idProduct,1);
-                        if (success) {
+                        ArrayList<SeriProductDTO> listSeri = seriProductBUS.getListSeriById(idProduct,-1);
+                        ArrayList<String> listSeriString = new ArrayList<>();
+                        for (SeriProductDTO seri : listSeri) {
+                            listSeriString.add(seri.getNumSeri());
+                        }
+                        boolean success2 = seriProductBUS.updateSeriProduct(listSeriString,1);
+                        if (success && success2) {
                             ProductTable.loadProductData(productBUS,0,tfName.getText());
                             JOptionPane.showMessageDialog(null, "Đã bật sản phẩm ở cửa hàng thành công!");
                         } else {

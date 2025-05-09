@@ -1,6 +1,7 @@
 package com.quanlybanlaptop.gui.category_brand;
 
 import com.quanlybanlaptop.bus.CategoryBUS;
+import com.quanlybanlaptop.dto.AdminDTO;
 import com.quanlybanlaptop.dto.CategoryDTO;
 import com.quanlybanlaptop.gui.component.RoundedTable;
 
@@ -17,7 +18,7 @@ public class CategoryPanel {
     private static DefaultTableModel tableModel;
     private static RoundedTable categoryTable;
 
-    public static JPanel createCategoryPanel(JPanel contentArea, CategoryBUS categoryBUS) {
+    public static JPanel createCategoryPanel(AdminDTO adminDTO,JPanel contentArea, CategoryBUS categoryBUS) {
         buttonControlPanel = new JPanel(new BorderLayout());
         buttonControlPanel.add(TopCBPanel.createIpCategorydPanel(), BorderLayout.CENTER);
         // Sử dụng createButtonPanel với tham số
@@ -41,7 +42,7 @@ public class CategoryPanel {
         int panelWidth = (int) (parentWidth * 0.4);
         categoryPanel.setPreferredSize(new Dimension(panelWidth, 0));
         categoryPanel.setBackground(new Color(168, 196, 230));
-        buttonControlPanel.add(TopCBPanel.createButtonPanel("Category", categoryBUS, categoryTable, () -> loadCategoryData(categoryBUS)), BorderLayout.SOUTH);
+        buttonControlPanel.add(TopCBPanel.createButtonPanel(adminDTO,"Category", categoryBUS, categoryTable, () -> loadCategoryData(categoryBUS)), BorderLayout.SOUTH);
         categoryPanel.add(buttonControlPanel, BorderLayout.NORTH);
         categoryPanel.add(contentCtgr, BorderLayout.CENTER);
 

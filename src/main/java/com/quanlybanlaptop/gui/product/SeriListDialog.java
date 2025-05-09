@@ -14,7 +14,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class SeriListDialog {
-    public static void showDialog(ProductBUS productBUS, SeriProductBUS seriProductBUS) throws SQLException {
+    public static void showDialog(ProductBUS productBUS, SeriProductBUS seriProductBUS, String status) throws SQLException {
         int selectedRow = ProductTable.getSelectedRow();
         if (selectedRow == -1) {
             JOptionPane.showMessageDialog(null, "Vui lòng chọn một sản phẩm trước khi xem danh sách seri.");
@@ -46,7 +46,14 @@ public class SeriListDialog {
         JScrollPane scrollPane = new JScrollPane(seriTable);
 
         // Lấy danh sách seri từ DTO hoặc từ BUS (tuỳ bạn setup model)
-        ArrayList<SeriProductDTO> seriList = seriProductBUS.getListSeriById(idProduct,1); // nếu không có, bạn có thể dùng BUS để lấy
+        ArrayList<SeriProductDTO> seriList = new ArrayList<>();
+        if(status.equals("Hoạt động")){
+            seriList = seriProductBUS.getListSeriById(idProduct,1); // nếu không có, bạn có thể dùng BUS để lấy
+
+        }else{
+            seriList = seriProductBUS.getListSeriById(idProduct,-1); // nếu không có, bạn có thể dùng BUS để lấy
+
+        }
         if (seriList != null && !seriList.isEmpty()) {
             for (SeriProductDTO seri : seriList) {
                 String trangThai = seri.getStatus() == 1 ? "Sẵn sàng bán" : "Lỗi";

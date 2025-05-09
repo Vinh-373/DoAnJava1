@@ -1,24 +1,29 @@
 package com.quanlybanlaptop.gui.account;
 
 import com.quanlybanlaptop.bus.AdminBUS;
+import com.quanlybanlaptop.bus.RoleBUS;
 import com.quanlybanlaptop.dao.AdminDAO;
 import com.quanlybanlaptop.dao.DatabaseConnection;
+import com.quanlybanlaptop.dao.RoleDAO;
 import com.quanlybanlaptop.dto.AdminDTO;
-import com.quanlybanlaptop.dto.ProductDTO;
+import com.quanlybanlaptop.dto.RoleDTO;
+import com.quanlybanlaptop.gui.component.ComboItem;
 import com.quanlybanlaptop.gui.component.RoundedButton;
 import com.quanlybanlaptop.gui.component.RoundedComponent;
-import com.quanlybanlaptop.gui.product.ProductTable;
 
 import javax.swing.*;
 import java.awt.*;
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.List;
+
 
 public class AddAccDialog {
     private static JTextField tentf,emailtf,sdttf,passtf;
     private static JRadioButton rdoNam,rdoNu;
     private static  RoundedButton btnAdd,btnEdit;
     private static JLabel heading;
+    private static JComboBox<ComboItem> roleComboBox;
     public static void createDialog(String chucnang,AdminDTO admin) {
         JDialog addDialog = new JDialog();
         addDialog.setTitle("Thêm tài khoản");
@@ -35,7 +40,23 @@ public class AddAccDialog {
         Font labelFont = new Font("Tahoma", Font.PLAIN, 15);
         Font fieldFont = new Font("Tahoma", Font.PLAIN, 15);
         Font titleFont = new Font("Tahoma", Font.BOLD, 20);
+        Connection cnn = DatabaseConnection.getConnection();
+        RoleDAO roleDAO = new RoleDAO(cnn);
+        RoleBUS roleBus = new RoleBUS(roleDAO);
 
+        List<ComboItem> RoleItems = new ArrayList<>();
+        ArrayList<RoleDTO> roleDTOs = new ArrayList<>();
+        try {
+            roleDTOs = roleBus.getAllRoles();
+        System.out.println("roleDTOs: " + roleDTOs);
+
+            for (RoleDTO role : roleDTOs) {
+                RoleItems.add(new ComboItem(role.getIdRole(), role.getNameRole()));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
         // Tiêu đề
          heading = new JLabel("THÊM TÀI KHOẢN", SwingConstants.CENTER);
         heading.setFont(titleFont);
@@ -117,7 +138,21 @@ public class AddAccDialog {
         passtf.setFont(fieldFont);
         passtf.setPreferredSize(new Dimension(250, 30));
         addDialog.add(passtf, gbc);
+        gbc.gridy++;
+        gbc.gridx = 0;
+        JLabel lblRole = new JLabel("Vai trò:");
+        lblRole.setFont(labelFont);
+        addDialog.add(lblRole, gbc);
 
+        gbc.gridx = 1;
+        roleComboBox = new JComboBox<>();
+        System.out.println("c" + RoleItems);
+        for (ComboItem item : RoleItems) {
+            roleComboBox.addItem(item);
+        }
+        roleComboBox.setFont(fieldFont);
+        roleComboBox.setPreferredSize(new Dimension(250, 30));
+        addDialog.add(roleComboBox, gbc);
         // Nút Thêm và Hủy
         gbc.gridy++;
         gbc.gridx = 0;
@@ -148,15 +183,15 @@ public class AddAccDialog {
             String email = emailtf.getText().trim();
             String contact = sdttf.getText().trim();
             String password = passtf.getText().trim();
+            int role = ((ComboItem) roleComboBox.getSelectedItem()).getId();
 
             if (name.isEmpty() || gender.isEmpty() || email.isEmpty() || contact.isEmpty() || password.isEmpty()) {
                 JOptionPane.showMessageDialog(addDialog, "Vui lòng điền đầy đủ thông tin!", "Thiếu thông tin", JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
-            AdminDTO adminDTO = new AdminDTO(0, name, gender, email, contact, password, 1);
+            AdminDTO adminDTO = new AdminDTO(0,role, name, gender, email, contact, password, 1);
             try {
-                Connection cnn = DatabaseConnection.getConnection();
                 AdminDAO adminDAO = new AdminDAO(cnn);
                 AdminBUS adminBUS = new AdminBUS(adminDAO);
 
@@ -185,6 +220,7 @@ public class AddAccDialog {
             String email = emailtf.getText().trim();
             String contact = sdttf.getText().trim();
             String password = passtf.getText().trim();
+            int role = ((ComboItem) roleComboBox.getSelectedItem()).getId();
 
             if (name.isEmpty() || gender.isEmpty() || email.isEmpty() || contact.isEmpty() || password.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Vui lòng điền đầy đủ thông tin!", "Thiếu thông tin", JOptionPane.WARNING_MESSAGE);
@@ -192,7 +228,6 @@ public class AddAccDialog {
             }
 
             try {
-                Connection cnn = DatabaseConnection.getConnection();
                 AdminDAO adminDAO = new AdminDAO(cnn);
                 AdminBUS adminBUS = new AdminBUS(adminDAO);
 
@@ -204,7 +239,7 @@ public class AddAccDialog {
 
                 int id = Integer.parseInt(AccountTable.getTableModel().getValueAt(selectedRow, 0).toString());
 
-                AdminDTO updatedAdmin = new AdminDTO(id, name, gender, email, contact, password, 1);
+                AdminDTO updatedAdmin = new AdminDTO(id,role, name, gender, email, contact, password, 1);
 
                 boolean success = adminBUS.updateAdmin(updatedAdmin);
                 if (success) {
@@ -243,12 +278,19 @@ public class AddAccDialog {
             }else{
                 rdoNu.setSelected(true);
             }
+            for (int i = 0; i < roleComboBox.getItemCount(); i++) {
+                ComboItem item = roleComboBox.getItemAt(i);
+                if (item.getId() == adminDTO.getIdRole()) {
+                    roleComboBox.setSelectedItem(item);
+                    break;
+                }
+            }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, "Lỗi khi tải sản phẩm: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
 
 
     }
-
+    
 
 }

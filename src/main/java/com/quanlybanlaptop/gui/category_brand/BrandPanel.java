@@ -2,6 +2,7 @@ package com.quanlybanlaptop.gui.category_brand;
 
 import com.quanlybanlaptop.bus.CategoryBUS;
 import com.quanlybanlaptop.bus.CompanyBUS;
+import com.quanlybanlaptop.dto.AdminDTO;
 import com.quanlybanlaptop.dto.CategoryDTO;
 import com.quanlybanlaptop.dto.CompanyDTO;
 import com.quanlybanlaptop.gui.component.RoundedTable;
@@ -18,7 +19,7 @@ public class BrandPanel {
     private static JPanel buttonControlPanel, brandPanel;
     private static DefaultTableModel tableModel;
     private static RoundedTable brandTable;
-    public static JPanel createBrandPanel(JPanel contentArea, CompanyBUS companyBUS) {
+    public static JPanel createBrandPanel(AdminDTO adminDTO,JPanel contentArea, CompanyBUS companyBUS) {
         buttonControlPanel = new JPanel(new BorderLayout());
         String[] columnNames = {"MÃ HÃNG", "TÊN HÃNG", "ĐỊA CHỈ", "SỐ ĐIỆN THOẠI"};
         tableModel = new DefaultTableModel(columnNames, 0);
@@ -40,7 +41,7 @@ public class BrandPanel {
 //        brandPanel.setPreferredSize(new Dimension(panelWidth, 0));
         brandPanel.setBackground(new Color(168, 196, 230));
 //        brandPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        buttonControlPanel.add(TopCBPanel.createButtonPanel("Brand", companyBUS, brandTable, () -> loadBrandData(companyBUS)), BorderLayout.NORTH);
+        buttonControlPanel.add(TopCBPanel.createButtonPanel(adminDTO,"Brand", companyBUS, brandTable, () -> loadBrandData(companyBUS)), BorderLayout.NORTH);
         buttonControlPanel.add(TopCBPanel.createIpBrandPanel(), BorderLayout.CENTER);
         brandPanel.add(buttonControlPanel, BorderLayout.NORTH);
         brandPanel.add(contentCtgr, BorderLayout.CENTER);

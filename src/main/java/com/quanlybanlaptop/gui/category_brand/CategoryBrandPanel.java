@@ -2,6 +2,7 @@ package com.quanlybanlaptop.gui.category_brand;
 
 import com.quanlybanlaptop.bus.CategoryBUS;
 import com.quanlybanlaptop.bus.CompanyBUS;
+import com.quanlybanlaptop.dto.AdminDTO;
 import com.quanlybanlaptop.gui.component.RoundedButton;
 import com.quanlybanlaptop.util.ImageLoader;
 
@@ -12,7 +13,7 @@ public class CategoryBrandPanel {
     private static JPanel contentSwitcherPanel;
     private static CardLayout cardLayout;
 
-    public static void createCategoryBrandContent(JPanel contentArea, CategoryBUS categoryBUS, CompanyBUS companyBUS) {
+    public static void createCategoryBrandContent(AdminDTO adminDTO,JPanel contentArea, CategoryBUS categoryBUS, CompanyBUS companyBUS) {
         contentArea.setLayout(new BorderLayout());
         contentArea.setBackground(new Color(239, 237, 237));
 
@@ -31,8 +32,8 @@ public class CategoryBrandPanel {
         cardLayout = new CardLayout();
         contentSwitcherPanel = new JPanel(cardLayout);
 
-        JPanel categoryPanel = CategoryPanel.createCategoryPanel(contentArea, categoryBUS);
-        JPanel brandPanel = BrandPanel.createBrandPanel(contentArea, companyBUS);
+        JPanel categoryPanel = CategoryPanel.createCategoryPanel(adminDTO,contentArea, categoryBUS);
+        JPanel brandPanel = BrandPanel.createBrandPanel(adminDTO,contentArea, companyBUS);
 
         contentSwitcherPanel.add(categoryPanel, "Category");
         contentSwitcherPanel.add(brandPanel, "Brand");

@@ -19,6 +19,7 @@ public class MainFrame extends JFrame {
             CustomerBUS customerBUS,
             InsuranceClaimBUS insuranceClaimBUS,
             ThongKeBUS thongKeBUS
+   
     ) throws SQLException {
         setTitle("Hệ thống quản lý cửa hàng laptop");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -40,6 +41,7 @@ public class MainFrame extends JFrame {
                 customerBUS,
                 insuranceClaimBUS,
                 thongKeBUS,
+    
                 this // truyền MainFrame vào cuối cùng
         );
         sidebar.setContentChangeListener(mainContent);

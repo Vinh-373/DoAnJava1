@@ -1,7 +1,15 @@
 package com.quanlybanlaptop.gui.category_brand;
 
+import com.quanlybanlaptop.bus.AuthoritiesBUS;
+import com.quanlybanlaptop.bus.CTQBUS;
 import com.quanlybanlaptop.bus.CategoryBUS;
 import com.quanlybanlaptop.bus.CompanyBUS;
+import com.quanlybanlaptop.bus.RoleBUS;
+import com.quanlybanlaptop.dao.AuthoritiesDAO;
+import com.quanlybanlaptop.dao.CTQDAO;
+import com.quanlybanlaptop.dao.DatabaseConnection;
+import com.quanlybanlaptop.dao.RoleDAO;
+import com.quanlybanlaptop.dto.AdminDTO;
 import com.quanlybanlaptop.dto.CategoryDTO;
 import com.quanlybanlaptop.dto.CompanyDTO;
 import com.quanlybanlaptop.gui.component.RoundedButton;
@@ -10,6 +18,7 @@ import com.quanlybanlaptop.util.ImageLoader;
 
 import javax.swing.*;
 import java.awt.*;
+import java.sql.Connection;
 import java.sql.SQLException;
 
 public class TopCBPanel {
@@ -124,14 +133,21 @@ public class TopCBPanel {
         return formPanel;
     }
 
-    public static JPanel createButtonPanel(String context, Object bus, JTable table, Runnable refreshCallback) {
+    public static JPanel createButtonPanel(AdminDTO adminDTO,String context, Object bus, JTable table, Runnable refreshCallback) {
+        Connection cnn = DatabaseConnection.getConnection();
+        
+        CTQDAO ctqDAO = new CTQDAO(cnn);
+        CTQBUS ctqBUS = new CTQBUS(ctqDAO);
         JPanel buttonControlPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         RoundedButton btnAdd = new RoundedButton("Thêm", ImageLoader.loadResourceImage("/img/add_control.png"));
         btnAdd.setImageSize(32, 32);
+        btnAdd.setEnabled(ctqBUS.isChecked(adminDTO.getIdRole(), 2, 1));
         RoundedButton btnEdit = new RoundedButton("Sửa", ImageLoader.loadResourceImage("/img/edit_control.png"));
         btnEdit.setImageSize(32, 32);
+        btnEdit.setEnabled(ctqBUS.isChecked(adminDTO.getIdRole(), 2, 2));
         RoundedButton btnDelete = new RoundedButton("Xóa", ImageLoader.loadResourceImage("/img/delete_control.png"));
         btnDelete.setImageSize(32, 32);
+        btnDelete.setEnabled(ctqBUS.isChecked(adminDTO.getIdRole(), 2, 3));
         RoundedButton btnRefresh = new RoundedButton("Làm mới", ImageLoader.loadResourceImage("/img/refresh_control.png"));
         btnRefresh.setImageSize(32, 32);
 
@@ -198,6 +214,7 @@ public class TopCBPanel {
 
     private static void handleAddCategory(CategoryBUS categoryBUS) {
         String name = nameCategoryField.getText().trim();
+        
         if (!idCategoryField.getText().trim().isEmpty() || nameCategoryField.getText().trim().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Ô Mã Loại phải để trống, ô tên không đưuọc để trống!", "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
@@ -272,7 +289,11 @@ public class TopCBPanel {
         String name = nameCompanyField.getText().trim();
         String address = addressCompanyField.getText().trim();
         String contact = contactCompanyField.getText().trim();
-
+        if (!contact.matches("0\\d{9}")) {
+            JOptionPane.showMessageDialog(null, "Số điện thoại không hợp lệ! Phải bắt đầu bằng 0 và đủ 10 chữ số.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
 
         try {
             CompanyDTO company = new CompanyDTO();
@@ -303,6 +324,11 @@ public class TopCBPanel {
             JOptionPane.showMessageDialog(null, "Vui lòng nhập đầy đủ mã hãng và tên hãng!", "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
         }
+        if (!contact.matches("0\\d{9}")) {
+            JOptionPane.showMessageDialog(null, "Số điện thoại không hợp lệ! Phải bắt đầu bằng 0 và đủ 10 chữ số.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
         try {
             CompanyDTO company = new CompanyDTO();
             company.setCompanyId(id);

@@ -1,7 +1,18 @@
 package com.quanlybanlaptop.gui.thongKe;
 
 import javax.swing.*;
+
+import com.quanlybanlaptop.bus.AuthoritiesBUS;
+import com.quanlybanlaptop.bus.CTQBUS;
+import com.quanlybanlaptop.bus.RoleBUS;
+import com.quanlybanlaptop.dao.AuthoritiesDAO;
+import com.quanlybanlaptop.dao.CTQDAO;
+import com.quanlybanlaptop.dao.DatabaseConnection;
+import com.quanlybanlaptop.dao.RoleDAO;
+import com.quanlybanlaptop.dto.AdminDTO;
+
 import java.awt.*;
+import java.sql.Connection;
 
 public class thongKeMenu extends JPanel {
     private JButton btnTongQuan;
@@ -10,15 +21,23 @@ public class thongKeMenu extends JPanel {
     private JButton btnDoanhThu;
     private JButton btnSanPham;
 
-    public thongKeMenu() {
+    public thongKeMenu(AdminDTO adminDTO) {
         setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
         setBackground(Color.WHITE);
-
+          Connection cnn = DatabaseConnection.getConnection();
+      
+        CTQDAO ctqDAO = new CTQDAO(cnn);
+        CTQBUS ctqBUS = new CTQBUS(ctqDAO);
         btnTongQuan = createMenuButton("Tổng Quan");
+        btnTongQuan.setEnabled(ctqBUS.isChecked(adminDTO.getIdRole(), 8, 1));
         btnKhachHang = createMenuButton("Khách Hàng");
+        btnKhachHang.setEnabled(ctqBUS.isChecked(adminDTO.getIdRole(), 8, 2));
         btnTonKho = createMenuButton("Tồn Kho");
+        btnTonKho.setEnabled(ctqBUS.isChecked(adminDTO.getIdRole(), 8, 3));
         btnDoanhThu = createMenuButton("Doanh Thu");
+        btnDoanhThu.setEnabled(ctqBUS.isChecked(adminDTO.getIdRole(), 8, 4));
         btnSanPham = createMenuButton("Sản Phẩm");
+        btnSanPham.setEnabled(ctqBUS.isChecked(adminDTO.getIdRole(), 8, 5));
 
         add(btnTongQuan);
         add(btnKhachHang);
