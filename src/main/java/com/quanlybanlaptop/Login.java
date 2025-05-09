@@ -6,10 +6,11 @@ import com.quanlybanlaptop.dto.AdminDTO;
 import com.quanlybanlaptop.gui.component.RoundedButton;
 import com.quanlybanlaptop.gui.mainView.MainFrame;
 import com.quanlybanlaptop.util.ImageLoader;
-
+import com.quanlybanlaptop.dto.RoleDTO;
 import javax.swing.*;
 import java.awt.*;
 import java.sql.Connection;
+import java.util.ArrayList;
 
 public class Login extends JFrame {
 
@@ -108,6 +109,8 @@ public class Login extends JFrame {
                             InsuranceClaimBUS insuranceClaimBUS = new InsuranceClaimBUS(insuranceClaimDAO);
                             ThongKeDAO thongKeDAO = new ThongKeDAO(conn);
                             ThongKeBUS thongKeBUS = new ThongKeBUS(thongKeDAO);
+                
+                           
                             // Truyền insuranceBUS và các BUS khác vào MainFrame
                             MainFrame mainFrame = new MainFrame(
                                 insuranceBUS,
@@ -120,9 +123,9 @@ public class Login extends JFrame {
                                 billExportBUS,
                                 billExDetailBUS,
                                 customerBUS,
-                                
-                                insuranceClaimBUS// Truyền insuranceClaimBUS vào MainFrame
-                                , thongKeBUS // Truyền thongKeBUS vào MainFrame
+                                insuranceClaimBUS,
+                                thongKeBUS
+                            
                             );
                             mainFrame.setVisible(true);
                         } catch (Exception ex) {

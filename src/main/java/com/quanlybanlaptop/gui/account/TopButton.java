@@ -2,6 +2,7 @@ package com.quanlybanlaptop.gui.account;
 
 
 import com.quanlybanlaptop.bus.AdminBUS;
+import com.quanlybanlaptop.bus.RoleBUS;
 import com.quanlybanlaptop.dao.AdminDAO;
 import com.quanlybanlaptop.dao.DatabaseConnection;
 import com.quanlybanlaptop.dto.AdminDTO;
@@ -183,12 +184,14 @@ public class TopButton {
             // Lấy thông tin admin từ bảng
             AdminDTO adminDTO = new AdminDTO(
                     Integer.parseInt(table.getValueAt(row, 0).toString()),  // ID
+                    table.getValueAt(row, 6).toString().equals("Chủ") ? 1 : 
+                    table.getValueAt(row, 6).toString().equals("Quản Lý") ? 2 : 3, // Trạng thái,
                     table.getValueAt(row, 1).toString(),                     // Tên
                     table.getValueAt(row, 2).toString(),                     // Giới tính
                     table.getValueAt(row, 3).toString(),                     // Email
                     table.getValueAt(row, 4).toString(),                     // Liên hệ
                     table.getValueAt(row, 5).toString(),                     // Mật khẩu
-                    table.getValueAt(row, 6).toString().equals("Hoạt động") ? 1 : 0 // Trạng thái
+                    table.getValueAt(row, 7).toString().equals("Hoạt động") ? 1 : 0 // Trạng thái
             );
             AddAccDialog.createDialog("Sửa",adminDTO); // Mở form "Sửa"
         });
@@ -212,6 +215,7 @@ public class TopButton {
                 btnDelete.setVisible(true);
                 btnRestore.setEnabled(false);
                 tfName.setText("");
+                btnEdit.setVisible(true);
             }else {
                 ArrayList<AdminDTO> list = new ArrayList<>();
 
@@ -227,6 +231,7 @@ public class TopButton {
                 btnRestore.setVisible(true);
                 btnRestore.setEnabled(true);
                 tfName.setText("");
+                btnEdit.setVisible(false);
             }
         });
 

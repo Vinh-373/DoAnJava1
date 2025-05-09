@@ -20,6 +20,7 @@ public class AdminDAO {
     private AdminDTO createAdminDTO (ResultSet rs) throws SQLException {
         return new AdminDTO(
                 rs.getInt("id_admin"),           // idProduct
+                rs.getInt("id_role"),           // idRole
                 rs.getString("name"),         // name
                 rs.getString("gender"),
                 rs.getString("email"),
@@ -46,7 +47,7 @@ public class AdminDAO {
 
     public ArrayList<AdminDTO> getAllAdmin() throws SQLException {
         ArrayList<AdminDTO> adminDTOS = new ArrayList<>();
-        String sql = "SELECT a.id_admin, a.name, a.gender, a.email, a.contact, a.password, a.status FROM ADMIN a WHERE a.status = 1 OR a.status = 0";
+        String sql = "SELECT a.id_admin,a.id_role ,a.name, a.gender, a.email, a.contact, a.password, a.status FROM ADMIN a WHERE a.status = 1 OR a.status = 0";
 
         try (PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
@@ -56,7 +57,7 @@ public class AdminDAO {
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
-            throw new SQLException("Lỗi khi lấy danh sách sản phẩm: " + ex.getMessage(), ex);
+            throw new SQLException("Lỗi khi lấy danh sách taikhoan: " + ex.getMessage(), ex);
         }
         return adminDTOS;
     }
@@ -79,15 +80,16 @@ public class AdminDAO {
         return null; // Không tìm thấy hoặc có lỗi
     }
     public boolean insertAdmin(AdminDTO adminDTO) {
-        String sql = "INSERT INTO ADMIN ( name, gender, email, contact, password, status) VALUES ( ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO ADMIN (id_role, name, gender, email, contact, password, status) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, adminDTO.getName());
-            ps.setString(2, adminDTO.getGender());
-            ps.setString(3, adminDTO.getEmail());
-            ps.setString(4, adminDTO.getContact());
-            ps.setString(5, adminDTO.getPassword());
-            ps.setInt(6, adminDTO.getStatus());
+            ps.setInt(1, adminDTO.getIdRole());
+            ps.setString(2, adminDTO.getName());
+            ps.setString(3, adminDTO.getGender());
+            ps.setString(4, adminDTO.getEmail());
+            ps.setString(5, adminDTO.getContact());
+            ps.setString(6, adminDTO.getPassword());
+            ps.setInt(7, adminDTO.getStatus());
 
             int rowsAffected = ps.executeUpdate();
             return rowsAffected > 0;
@@ -97,16 +99,17 @@ public class AdminDAO {
         return false;
     }
     public boolean updateAdmin(AdminDTO adminDTO) {
-        String sql = "UPDATE ADMIN SET name = ?, gender = ?, email = ?, contact = ?, password = ?, status = ? WHERE id_admin = ?";
+        String sql = "UPDATE ADMIN SET id_role = ?, name = ?, gender = ?, email = ?, contact = ?, password = ?, status = ? WHERE id_admin = ?";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, adminDTO.getName());
-            ps.setString(2, adminDTO.getGender());
-            ps.setString(3, adminDTO.getEmail());
-            ps.setString(4, adminDTO.getContact());
-            ps.setString(5, adminDTO.getPassword());
-            ps.setInt(6, adminDTO.getStatus());
-            ps.setInt(7, adminDTO.getId());
+            ps.setInt(1, adminDTO.getIdRole());
+            ps.setString(2, adminDTO.getName());
+            ps.setString(3, adminDTO.getGender());
+            ps.setString(4, adminDTO.getEmail());
+            ps.setString(5, adminDTO.getContact());
+            ps.setString(6, adminDTO.getPassword());
+            ps.setInt(7, adminDTO.getStatus());
+            ps.setInt(8, adminDTO.getId());
 
             int rowsAffected = ps.executeUpdate();
             return rowsAffected > 0;
@@ -140,6 +143,7 @@ public class AdminDAO {
             while (rs.next()) {
                 AdminDTO admin = new AdminDTO(
                         rs.getInt("id_admin"),
+                        rs.getInt("id_role"),
                         rs.getString("name"),
                         rs.getString("gender"),
                         rs.getString("email"),

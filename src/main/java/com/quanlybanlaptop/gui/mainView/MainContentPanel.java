@@ -4,6 +4,7 @@ import com.quanlybanlaptop.bus.*;
 import com.quanlybanlaptop.dto.AdminDTO;
 import com.quanlybanlaptop.gui.BillExport.ExportCtn;
 import com.quanlybanlaptop.gui.account.AccountPanel;
+import com.quanlybanlaptop.gui.authority.AuthorityPanel;
 import com.quanlybanlaptop.gui.category_brand.CategoryBrandPanel;
 import com.quanlybanlaptop.gui.product.ProductPanel;
 import com.quanlybanlaptop.gui.component.*;
@@ -49,6 +50,7 @@ public class MainContentPanel extends JPanel implements ContentChangeListener {
             CustomerBUS customerBUS,
             InsuranceClaimBUS insuranceClaimBUS,
             ThongKeBUS thongKeBUS,
+
             MainFrame parentFrame // Thay JFrame thành MainFrame
     ) {
         this.insuranceBUS = insuranceBUS;
@@ -211,6 +213,9 @@ public class MainContentPanel extends JPanel implements ContentChangeListener {
                 contentArea.setLayout(new BorderLayout());
                 InsurancePanel insurancePanel = new InsurancePanel(insuranceBUS, seriProductBUS, insuranceClaimBUS);
                 contentArea.add(insurancePanel, BorderLayout.CENTER);
+                break;
+            case "Phân quyền":
+                AuthorityPanel.createAuthorityPanel(contentArea);
                 break;
             case "Thống kê":
                 contentArea.setLayout(new BorderLayout());

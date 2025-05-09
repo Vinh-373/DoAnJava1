@@ -1,7 +1,7 @@
 package com.quanlybanlaptop.dto;
 
 public class AdminDTO {
-        private int id;
+        private int id, idRole;
         private String name;
         private String gender;
         private String email;
@@ -11,8 +11,9 @@ public class AdminDTO {
 
         public AdminDTO() {}
 
-        public AdminDTO(int id, String name, String gender, String email, String contact, String password, int status) {
+        public AdminDTO(int id,int idRole, String name, String gender, String email, String contact, String password, int status) {
             this.id = id;
+            this.idRole = idRole;
             this.name = name;
             this.gender = gender;
             this.email = email;
@@ -43,4 +44,6 @@ public class AdminDTO {
         public int getStatus() { return status; }
         public void setStatus(int status) { this.status = status; }
 
+        public int getIdRole() { return idRole; }
+        public void setIdRole(int idRole) { this.idRole = idRole; }
 }

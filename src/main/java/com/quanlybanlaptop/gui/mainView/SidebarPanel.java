@@ -53,6 +53,7 @@ public class SidebarPanel extends JPanel {
                 {"Kho hàng", "/img/import.png"},
                 {"Bảo hành", "/img/warranty.png"},
                 {"Thống kê", "/img/statistics.png"},
+                {"Phân quyền", "/img/authority.png"},
                 {"Đăng xuất", "/img/logout.png"}
         };
 

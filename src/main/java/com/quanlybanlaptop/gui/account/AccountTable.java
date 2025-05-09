@@ -13,11 +13,11 @@ public class AccountTable {
     private static DefaultTableModel tableModel;
     private static RoundedTable table;
     public static JScrollPane createAccountTable(AdminBUS adminBUS) {
-        String[] columnNames = {"MÃ", "TÊN", "GIỚI TÍNH", "EMAIL", "LIÊN HỆ", "MẬT KHẨU","TRẠNG THÁI"};
+        String[] columnNames = {"MÃ", "TÊN", "GIỚI TÍNH", "EMAIL", "LIÊN HỆ", "MẬT KHẨU","VAI TRÒ", "TRẠNG THÁI"};
         tableModel = new DefaultTableModel(columnNames, 0);
 
         table = new RoundedTable(tableModel);
-        table.setColumnWidths(10, 150, 30, 90, 50, 100,50);
+        table.setColumnWidths(10, 140, 30, 90, 50, 60,50,50);
         table.setFocusable(false); // Không cho focus
         table.setRequestFocusEnabled(false); // Không nhận focus từ bàn phím
         table.setDefaultEditor(Object.class, null); // Tắt focus trên từng ô
@@ -40,7 +40,10 @@ public class AccountTable {
                     admin.getEmail(),
                     admin.getContact(),
                     admin.getPassword(),
-                    admin.getStatus() == 1 ? "Hoạt động" : "Ngừng HĐ"
+                    admin.getIdRole() == 1 ? "Chủ" :
+                    admin.getIdRole() == 2 ? "Quản Lý": "Nhân Viên",
+                    admin.getStatus() == 1 ? "Hoạt Động" : "Ngừng Hoạt Động"
+
             });
         }
     }
