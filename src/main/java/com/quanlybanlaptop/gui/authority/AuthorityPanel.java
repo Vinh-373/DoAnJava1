@@ -12,13 +12,13 @@ public class AuthorityPanel {
         contentArea.setLayout(new BorderLayout());
         
         // Create the top panel with buttons
-        JPanel topPanel = TopPanel.createButtonPanel();
+     
         
         // Create the content panel
         JPanel contentPanel = ContentPanel.createContentPanel();
         
         // Add the top panel and content panel to the main panel
-        contentArea.add(topPanel, BorderLayout.NORTH);
+
         contentArea.add(contentPanel, BorderLayout.CENTER);
         
     

@@ -2,11 +2,16 @@ package com.quanlybanlaptop.gui.mainView;
 
 import com.quanlybanlaptop.Login;
 import com.quanlybanlaptop.bus.AdminBUS;
+import com.quanlybanlaptop.bus.AuthoritiesBUS;
+import com.quanlybanlaptop.dao.AuthoritiesDAO;
+import com.quanlybanlaptop.dao.DatabaseConnection;
 import com.quanlybanlaptop.dto.AdminDTO;
 import com.quanlybanlaptop.util.ImageLoader;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.net.ConnectException;
+import java.sql.Connection;
 import java.sql.SQLException;
 
 public class SidebarPanel extends JPanel {
@@ -17,6 +22,9 @@ public class SidebarPanel extends JPanel {
     private static final float FONT_SIZE_PERCENTAGE = 0.08f; // Font chiếm 8% chiều rộng
 
     public SidebarPanel(AdminDTO adminDTO) {
+         Connection cnn = DatabaseConnection.getConnection();
+        AuthoritiesDAO authoritiesDAO = new AuthoritiesDAO(cnn);
+        AuthoritiesBUS authoritiesBUS = new AuthoritiesBUS(authoritiesDAO);
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setBackground(Color.WHITE);
         setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1, Color.GRAY));
@@ -73,7 +81,14 @@ public class SidebarPanel extends JPanel {
         buttonPanel.setBackground(Color.WHITE);
         buttonPanel.setOpaque(false);
 
+        int roleId = adminDTO.getIdRole();
+        int i = 0;
         for (String[] item : menuItems) {
+            if (!item[0].equals("Trang chủ") && !item[0].equals("Đăng xuất") && !authoritiesBUS.isChecked(roleId, i)) {
+                i++;
+                continue;
+            }
+            
             ImageIcon iconItem = ImageLoader.loadResourceImage(item[1]);
             if (iconItem != null) {
                 Image scaledImageItem = iconItem.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
@@ -151,6 +166,7 @@ public class SidebarPanel extends JPanel {
             } else {
                 System.err.println("Không thể tải ảnh: " + item[1]);
             }
+            i++;
         }
 
         add(buttonPanel);

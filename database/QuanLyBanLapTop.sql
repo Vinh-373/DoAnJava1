@@ -166,6 +166,15 @@ CREATE TABLE [AUTHORITIES] (
 );
 GO
 
+CREATE TABLE [AUTHORITIES_DETAIL] (
+	[id_role] INTEGER NOT NULL,
+	[id_authorities] INTEGER NOT NULL ,
+	[id_detail] INTEGER NOT NULL ,
+	[name] NVARCHAR(150) NOT NULL,
+	[status] INTEGER NOT NULL,
+	 PRIMARY KEY([id_role],[id_authorities],[id_detail])
+);
+GO
 -- Ràng buộc khóa ngoại
 ALTER TABLE [PRODUCT]
 ADD CONSTRAINT FK_PRODUCT_CATEGORY
@@ -184,6 +193,11 @@ ADD CONSTRAINT FK_AUTHORITIES_ROLE
     FOREIGN KEY ([id_role]) REFERENCES [ROLE]([id_role])
     ON UPDATE NO ACTION
     ON DELETE NO ACTION;
+GO
+ALTER TABLE AUTHORITIES_DETAIL
+ADD CONSTRAINT FK_AUTHORITIES_DETAIL_AUTHORITIES
+    FOREIGN KEY (id_role, id_authorities)
+    REFERENCES AUTHORITIES(id_role, id_authorities);
 GO
 ALTER TABLE [PRODUCT]
 ADD CONSTRAINT FK_PRODUCT_COMPANY
@@ -303,66 +317,3 @@ ADD CONSTRAINT FK_INSURANCE_CLAIM_SERI
     ON UPDATE NO ACTION
     ON DELETE NO ACTION;
 GO
--- Thêm dữ liệu vào bảng CATEGORY
-INSERT INTO CATEGORY (name_category, status) VALUES
-('Laptop Gaming', 1),        -- id = 1
-('Laptop Văn Phòng', 1),     -- id = 2
-('Laptop Siêu Mỏng', 1);     -- id = 3
-
-
--- Thêm dữ liệu vào bảng COMPANY
-INSERT INTO COMPANY (name_company, address, contact, status) VALUES
-('Dell', 'USA', '1900-123-456', 1),
-('HP', 'USA', '1900-654-321', 1),
-('Lenovo', 'China', '1800-987-654', 1),
-('Apple', 'USA', '1800-111-222', 1),
-('ASUS', 'Taiwan', '1800-333-444', 1),
-('Acer', 'Taiwan', '1800-555-666', 1),
-('Microsoft', 'USA', '1800-777-888', 1),
-('Razer', 'Singapore', '1800-999-000', 1),
-('Framework', 'USA', '1800-246-810', 1);
-
-INSERT INTO ROLE (name_role, status) VALUES
-('Chủ',1),
-('Quản Lý',1),
-('Nhân Viên',1);
-GO
-
-INSERT INTO AUTHORITIES (id_role,id_authorities,name_authorities, status) VALUES
-(1,1,'Sản phẩm',1),
-(1,2,'Loại hãng',1),
-(1,3,'Khách hàng',1),
-(1,4,'Tài khoản',1),
-(1,5,'Hóa đơn',1),
-(1,6,'Kho hàng',1),
-(1,7,'Bảo hành',1),
-(1,8,'Thống kê',1),
-(1,9,'Phân quyền',1),
-(2,1,'Sản phẩm',1),
-(2,2,'Loại hãng',1),
-(2,3,'Khách hàng',1),
-(2,4,'Tài khoản',1),
-(2,5,'Hóa đơn',1),
-(2,6,'Kho hàng',1),
-(2,7,'Bảo hành',1),
-(2,8,'Thống kê',1),
-(2,9,'Phân quyền',0),
-(3,1,'Sản phẩm',1),
-(3,2,'Loại hãng',1),
-(3,3,'Khách hàng',1),
-(3,4,'Tài khoản',0),
-(3,5,'Hóa đơn',1),
-(3,6,'Kho hàng',1),
-(3,7,'Bảo hành',1),
-(3,8,'Thống kê',0),
-(3,9,'Phân quyền',0);
-
-GO
-
-INSERT INTO ADMIN (id_role,name, gender, email, contact, password, status) VALUES
-(1,'Nguyen Thi Mai', 'Female', 'nguyenmai@gmail.com', '0901234567', 'password123', 1),
-(2,'Tran Minh Tu', 'Male', 'tranminhtu@gmail.com', '0907654321', 'password456', 1),
-(3,'Nguyễn Văn Hùng', 'Male', 'nguyenvanhung@gmail.com', '0916826432', 'password789', 1);
-GO
-
-SELECT * FROM AUTHORITIES

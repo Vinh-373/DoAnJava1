@@ -66,7 +66,7 @@ public class MainContentPanel extends JPanel implements ContentChangeListener {
         this.customerBUS = customerBUS;
         this.insuranceClaimBUS = insuranceClaimBUS;
         this.thongKeBUS = thongKeBUS;
-        this.thongKePanel = new ThongKePanel(thongKeBUS);
+        this.thongKePanel = new ThongKePanel(adminDTO,thongKeBUS);
         setLayout(new BorderLayout());
         setBackground(new Color(244, 241, 241));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -192,10 +192,10 @@ public class MainContentPanel extends JPanel implements ContentChangeListener {
                 createHomeContent(contentArea);
                 break;
             case "Sản phẩm":
-                ProductPanel.createProductContent(contentArea, productBUS, categoryBUS, companyBUS, seriProductBUS);
+                ProductPanel.createProductContent(adminDTO,contentArea, productBUS, categoryBUS, companyBUS, seriProductBUS);
                 break;
             case "Loại, Hãng":
-                CategoryBrandPanel.createCategoryBrandContent(contentArea, categoryBUS, companyBUS);
+                CategoryBrandPanel.createCategoryBrandContent(adminDTO,contentArea, categoryBUS, companyBUS);
                 break;
             case "Kho hàng":
                 StockPanel.StockPanel(adminDTO, contentArea, productBUS, billImportBUS, seriProductBUS);
@@ -204,14 +204,14 @@ public class MainContentPanel extends JPanel implements ContentChangeListener {
                 ExportCtn.createExportPanel(contentArea, adminDTO, billExportBUS, billExDetailBUS, productBUS, seriProductBUS);
                 break;
             case "Tài khoản":
-                AccountPanel.createAccountPanel(contentArea);
+                AccountPanel.createAccountPanel(adminDTO,contentArea);
                 break;
             case "Khách hàng":
-                CustomerPanel.createCustomerContent(contentArea, customerBUS);
+                CustomerPanel.createCustomerContent(adminDTO,contentArea, customerBUS);
                 break;
             case "Bảo hành":
                 contentArea.setLayout(new BorderLayout());
-                InsurancePanel insurancePanel = new InsurancePanel(insuranceBUS, seriProductBUS, insuranceClaimBUS);
+                InsurancePanel insurancePanel = new InsurancePanel(adminDTO,insuranceBUS, seriProductBUS, insuranceClaimBUS);
                 contentArea.add(insurancePanel, BorderLayout.CENTER);
                 break;
             case "Phân quyền":
@@ -219,7 +219,7 @@ public class MainContentPanel extends JPanel implements ContentChangeListener {
                 break;
             case "Thống kê":
                 contentArea.setLayout(new BorderLayout());
-                ThongKePanel thongKePanel = new ThongKePanel(thongKeBUS);
+                ThongKePanel thongKePanel = new ThongKePanel(adminDTO,thongKeBUS);
                 contentArea.add(thongKePanel, BorderLayout.CENTER);
                 break;
             case "Đăng xuất":

@@ -1,7 +1,15 @@
 package com.quanlybanlaptop.gui.customer;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+
+import com.quanlybanlaptop.bus.AuthoritiesBUS;
+import com.quanlybanlaptop.bus.CTQBUS;
 import com.quanlybanlaptop.bus.CustomerBUS;
+import com.quanlybanlaptop.bus.RoleBUS;
+import com.quanlybanlaptop.dao.AuthoritiesDAO;
+import com.quanlybanlaptop.dao.CTQDAO;
+import com.quanlybanlaptop.dao.DatabaseConnection;
+import com.quanlybanlaptop.dao.RoleDAO;
 import com.quanlybanlaptop.gui.component.RoundedButton;
 import com.quanlybanlaptop.gui.component.RoundedComponent;
 import com.quanlybanlaptop.util.ExcelExporter;
@@ -11,9 +19,11 @@ import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import java.awt.*;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.quanlybanlaptop.dto.AdminDTO;
 import com.quanlybanlaptop.dto.CustomerDTO;
 
 public class CustomerTopPanel extends JPanel {
@@ -27,7 +37,10 @@ public class CustomerTopPanel extends JPanel {
     private CustomerBUS customerBUS;
     private JComboBox<String> searchTypeComboBox;
 
-    public CustomerTopPanel() {
+    public CustomerTopPanel(AdminDTO adminDTO) {
+        Connection cnn = DatabaseConnection.getConnection();
+        CTQDAO ctqDAO = new CTQDAO(cnn);
+        CTQBUS ctqBUS = new CTQBUS(ctqDAO);
         setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10));
         setBackground(Color.WHITE);
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -36,6 +49,7 @@ public class CustomerTopPanel extends JPanel {
 
         btnAdd = new RoundedButton("Thêm", ImageLoader.loadResourceImage("/img/add_control.png"));
         btnAdd.setImageSize(32, 32);
+        btnAdd.setEnabled(ctqBUS.isChecked(adminDTO.getIdRole(), 3, 1));
         btnAdd.addActionListener(e -> {
             SwingUtilities.invokeLater(() -> {
                 AddCustomer addFrame = new AddCustomer();
@@ -46,6 +60,7 @@ public class CustomerTopPanel extends JPanel {
 
         btnEdit = new RoundedButton("Sửa", ImageLoader.loadResourceImage("/img/edit_control.png"));
         btnEdit.setImageSize(32, 32);
+        btnEdit.setEnabled(ctqBUS.isChecked(adminDTO.getIdRole(), 3, 2));
         btnEdit.addActionListener(e -> {
             int selectedRow = CustomerTable.getSelectedRow();
             if (selectedRow >= 0) {
@@ -65,6 +80,7 @@ public class CustomerTopPanel extends JPanel {
 
         btnDelete = new RoundedButton("Xóa", ImageLoader.loadResourceImage("/img/delete_control.png"));
         btnDelete.setImageSize(32, 32);
+        btnDelete.setEnabled(ctqBUS.isChecked(adminDTO.getIdRole(), 3, 3));
         btnDelete.addActionListener(e -> {
             int selectedRow = CustomerTable.getSelectedRow();
             if (selectedRow >= 0) {
@@ -87,6 +103,7 @@ public class CustomerTopPanel extends JPanel {
 
         btnExportExcel = new RoundedButton("Xuất Excel", ImageLoader.loadResourceImage("/img/xuatExcel.png"));
         btnExportExcel.setImageSize(32, 32);
+        btnExportExcel.setEnabled(ctqBUS.isChecked(adminDTO.getIdRole(), 3, 4));
         btnExportExcel.addActionListener(e -> exportExcelAction());
 
         btnRefresh = new RoundedButton("Làm mới", ImageLoader.loadResourceImage("/img/refresh_control.png"));

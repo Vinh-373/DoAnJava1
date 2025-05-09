@@ -3,15 +3,16 @@ package com.quanlybanlaptop.gui.thongKe;
 import javax.swing.*;
 import java.awt.*;
 import com.quanlybanlaptop.bus.ThongKeBUS;
+import com.quanlybanlaptop.dto.AdminDTO;
 
 public class TKPanelContent extends JPanel {
     private thongKeMenu menuPanel;
     private JPanel contentPanel;
     private CardLayout cardLayout;
 
-    public TKPanelContent(ThongKeBUS thongKeBUS) {
+    public TKPanelContent(AdminDTO adminDTO,ThongKeBUS thongKeBUS) {
         setLayout(new BorderLayout());
-        menuPanel = new thongKeMenu();
+        menuPanel = new thongKeMenu(adminDTO);
         add(menuPanel, BorderLayout.NORTH); // Menu nằm góc trái trên cùng
 
         // CardLayout cho các panel thống kê

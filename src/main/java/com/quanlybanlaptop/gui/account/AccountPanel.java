@@ -13,10 +13,10 @@ import java.sql.Connection;
 public class AccountPanel {
     private static JPanel buttonControlPanel;
     private static JScrollPane tableScrollPane;
-    public static void createAccountPanel(JPanel contentArea) {
+    public static void createAccountPanel(AdminDTO adminDTO,JPanel contentArea) {
         contentArea.setLayout(new BorderLayout());
         contentArea.setBackground(new Color(239, 237, 237));
-        buttonControlPanel = TopButton.createButtonPanel();
+        buttonControlPanel = TopButton.createButtonPanel(adminDTO);
         contentArea.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
         Connection conn = DatabaseConnection.getConnection();
         AdminDAO adminDAO = new AdminDAO(conn);

@@ -1,8 +1,15 @@
 package com.quanlybanlaptop.gui.stock;
 
+import com.quanlybanlaptop.bus.AuthoritiesBUS;
 import com.quanlybanlaptop.bus.BillImportBUS;
+import com.quanlybanlaptop.bus.CTQBUS;
 import com.quanlybanlaptop.bus.ProductBUS;
+import com.quanlybanlaptop.bus.RoleBUS;
 import com.quanlybanlaptop.bus.SeriProductBUS;
+import com.quanlybanlaptop.dao.AuthoritiesDAO;
+import com.quanlybanlaptop.dao.CTQDAO;
+import com.quanlybanlaptop.dao.DatabaseConnection;
+import com.quanlybanlaptop.dao.RoleDAO;
 import com.quanlybanlaptop.dto.AdminDTO;
 import com.quanlybanlaptop.dto.BillExportDTO;
 import com.quanlybanlaptop.dto.BillImportDTO;
@@ -20,6 +27,8 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.net.ConnectException;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -32,12 +41,17 @@ public class TopStock {
         JPanel buttonPanel = new JPanel(new GridBagLayout());
         buttonPanel.setBackground(Color.WHITE);
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
+       Connection cnn = DatabaseConnection.getConnection();
+     
+        CTQDAO ctqDAO = new CTQDAO(cnn);
+        CTQBUS ctqBUS = new CTQBUS(ctqDAO);
         RoundedButton btnImport = new RoundedButton("Nhập hàng", ImageLoader.loadResourceImage("/img/import_prd_control.png"));
         btnImport.setImageSize(32, 32);
+        btnImport.setEnabled(ctqBUS.isChecked(adminDTO.getIdRole(), 6, 1));
 //        btnImport.setPreferredSize(new Dimension(37, 55));
         RoundedButton btnExport = new RoundedButton("Xuất hàng", ImageLoader.loadResourceImage("/img/export_prd_control.png"));
         btnExport.setImageSize(32, 32);
+        btnExport.setEnabled(ctqBUS.isChecked(adminDTO.getIdRole(), 6, 2));
         
 //        btnExport.setPreferredSize(new Dimension(37, 55));
         JLabel fromLb = new JLabel("Từ:");
