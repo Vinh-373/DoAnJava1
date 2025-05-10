@@ -317,3 +317,163 @@ ADD CONSTRAINT FK_INSURANCE_CLAIM_SERI
     ON UPDATE NO ACTION
     ON DELETE NO ACTION;
 GO
+-- Thêm dữ liệu vào bảng CATEGORYINSERT 
+INSERT INTO CATEGORY (name_category, status) VALUES
+(N'Laptop Gaming', 1),
+(N'Laptop Văn Phòng', 1),
+(N'Laptop Siêu Mỏng', 1);
+
+-- Thêm dữ liệu vào bảng COMPANY
+INSERT INTO COMPANY (name_company, address, contact, status) VALUES
+(N'Dell', N'USA', N'1900-123-456', 1),
+(N'HP', N'USA', N'1900-654-321', 1),
+(N'Lenovo', N'China', N'1800-987-654', 1),
+(N'Apple', N'USA', N'1800-111-222', 1),
+(N'ASUS', N'Taiwan', N'1800-333-444', 1),
+(N'Acer', N'Taiwan', N'1800-555-666', 1),
+(N'Microsoft', N'USA', N'1800-777-888', 1),
+(N'Razer', N'Singapore', N'1800-999-000', 1),
+(N'Framework', N'USA', N'1800-246-810', 1);
+
+INSERT INTO ROLE (name_role, status) VALUES
+(N'Chủ', 1),
+(N'Quản Lý', 1),
+(N'Nhân Viên', 1);
+GO
+
+INSERT INTO AUTHORITIES (id_role, id_authorities, name_authorities, status) VALUES
+(1, 1, N'Sản phẩm', 1),
+(1, 2, N'Loại hãng', 1),
+(1, 3, N'Khách hàng', 1),
+(1, 4, N'Tài khoản', 1),
+(1, 5, N'Hóa đơn', 1),
+(1, 6, N'Kho hàng', 1),
+(1, 7, N'Bảo hành', 1),
+(1, 8, N'Thống kê', 1),
+(1, 9, N'Phân quyền', 1),
+(2, 1, N'Sản phẩm', 1),
+(2, 2, N'Loại hãng', 1),
+(2, 3, N'Khách hàng', 1),
+(2, 4, N'Tài khoản', 1),
+(2, 5, N'Hóa đơn', 1),
+(2, 6, N'Kho hàng', 1),
+(2, 7, N'Bảo hành', 1),
+(2, 8, N'Thống kê', 1),
+(2, 9, N'Phân quyền', 0),
+(3, 1, N'Sản phẩm', 1),
+(3, 2, N'Loại hãng', 1),
+(3, 3, N'Khách hàng', 1),
+(3, 4, N'Tài khoản', 0),
+(3, 5, N'Hóa đơn', 1),
+(3, 6, N'Kho hàng', 1),
+(3, 7, N'Bảo hành', 1),
+(3, 8, N'Thống kê', 0),
+(3, 9, N'Phân quyền', 0);
+GO
+
+INSERT INTO AUTHORITIES_DETAIL (id_role, id_authorities, id_detail, name, status) VALUES
+-- Chủ (role 1)
+(1,1,1,N'Thêm',1),
+(1,1,2,N'Sửa',1),
+(1,1,3,N'Xóa',1),
+(1,1,4,N'Chi tiết',1),
+(1,1,5,N'DS Seri',1),
+(1,1,6,N'Nhập Ex',1),
+(1,1,7,N'Xuất Ex',1),
+(1,2,1,N'Thêm',1),
+(1,2,2,N'Sửa',1),
+(1,2,3,N'Xóa',1),
+(1,3,1,N'Thêm',1),
+(1,3,2,N'Sửa',1),
+(1,3,3,N'Xóa',1),
+(1,3,4,N'Xuất Ex',1),
+(1,4,1,N'Thêm',1),
+(1,4,2,N'Sửa',1),
+(1,4,3,N'Xóa',1),
+(1,5,1,N'Thêm',1),
+(1,5,2,N'Xóa',1),
+(1,5,3,N'Xuất PDF',1),
+(1,6,1,N'Nhập',1),
+(1,6,2,N'Xuất',1),
+(1,7,1,N'Thêm',1),
+(1,7,2,N'Xóa',1),
+(1,7,3,N'ThêmYC',1),
+(1,7,4,N'Xuất Ex',1),
+(1,8,1,N'TQuan',1),
+(1,8,2,N'KHàng',1),
+(1,8,3,N'Tồn',1),
+(1,8,4,N'DThu',1),
+(1,8,5,N'SPham',1),
+
+-- Quản lý (role 2)
+(2,1,1,N'Thêm',1),
+(2,1,2,N'Sửa',1),
+(2,1,3,N'Xóa',1),
+(2,1,4,N'Chi tiết',1),
+(2,1,5,N'DS Seri',1),
+(2,1,6,N'Nhập Ex',1),
+(2,1,7,N'Xuất Ex',1),
+(2,2,1,N'Thêm',1),
+(2,2,2,N'Sửa',1),
+(2,2,3,N'Xóa',1),
+(2,3,1,N'Thêm',1),
+(2,3,2,N'Sửa',1),
+(2,3,3,N'Xóa',1),
+(2,3,4,N'Xuất Ex',1),
+(2,4,1,N'Thêm',1),
+(2,4,2,N'Sửa',1),
+(2,4,3,N'Xóa',1),
+(2,5,1,N'Thêm',1),
+(2,5,2,N'Xóa',1),
+(2,5,3,N'Xuất PDF',1),
+(2,6,1,N'Nhập',1),
+(2,6,2,N'Xuất',1),
+(2,7,1,N'Thêm',1),
+(2,7,2,N'Xóa',1),
+(2,7,3,N'ThêmYC',1),
+(2,7,4,N'Xuất Ex',1),
+(2,8,1,N'TQuan',1),
+(2,8,2,N'KHàng',1),
+(2,8,3,N'Tồn',0),
+(2,8,4,N'DThu',0),
+(2,8,5,N'SPham',1),
+
+-- Nhân viên (role 3)
+(3,1,1,N'Thêm',0),
+(3,1,2,N'Sửa',0),
+(3,1,3,N'Xóa',0),
+(3,1,4,N'Chi tiết',1),
+(3,1,5,N'DS Seri',1),
+(3,1,6,N'Nhập Ex',0),
+(3,1,7,N'Xuất Ex',0),
+(3,2,1,N'Thêm',0),
+(3,2,2,N'Sửa',0),
+(3,2,3,N'Xóa',0),
+(3,3,1,N'Thêm',0),
+(3,3,2,N'Sửa',0),
+(3,3,3,N'Xóa',0),
+(3,3,4,N'Xuất Ex',0),
+(3,4,1,N'Thêm',0),
+(3,4,2,N'Sửa',0),
+(3,4,3,N'Xóa',0),
+(3,5,1,N'Thêm',1),
+(3,5,2,N'Xóa',0),
+(3,5,3,N'Xuất PDF',1),
+(3,6,1,N'Nhập',1),
+(3,6,2,N'Xuất',1),
+(3,7,1,N'Thêm',1),
+(3,7,2,N'Xóa',0),
+(3,7,3,N'ThêmYC',1),
+(3,7,4,N'Xuất Ex',1),
+(3,8,1,N'TQuan',0),
+(3,8,2,N'KHàng',0),
+(3,8,3,N'Tồn',0),
+(3,8,4,N'DThu',0),
+(3,8,5,N'SPham',0);
+GO
+
+INSERT INTO ADMIN (id_role, name, gender, email, contact, password, status) VALUES
+(1, N'Nguyen Thi Mai', N'Female', N'nguyenmai@gmail.com', N'0901234567', N'password123', 1),
+(2, N'Tran Minh Tu', N'Male', N'tranminhtu@gmail.com', N'0907654321', N'password456', 1),
+(3, N'Nguyễn Văn Hùng', N'Male', N'nguyenvanhung@gmail.com', N'0916826432', N'password789', 1);
+GO

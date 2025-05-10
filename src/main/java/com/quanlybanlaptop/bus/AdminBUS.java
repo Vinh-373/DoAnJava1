@@ -21,6 +21,9 @@ public class AdminBUS {
     public ArrayList<AdminDTO> getAllAdminDTOS() throws SQLException {
         return adminDAO.getAllAdmin();
     }
+    public AdminDTO getAdminById(int id) throws SQLException {
+        return adminDAO.getAdminById(id);
+    }
     public ArrayList<AdminDTO> getActiveAdmin(int status) throws SQLException {
         ArrayList<AdminDTO> list = new ArrayList<>();
         ArrayList<AdminDTO> listt = new ArrayList<>();

@@ -21,7 +21,7 @@ public class AccountPanel {
         Connection conn = DatabaseConnection.getConnection();
         AdminDAO adminDAO = new AdminDAO(conn);
         AdminBUS adminBUS = new AdminBUS(adminDAO);
-        tableScrollPane = AccountTable.createAccountTable(adminBUS);
+        tableScrollPane = AccountTable.createAccountTable(adminDTO,adminBUS);
         contentArea.add(buttonControlPanel, BorderLayout.NORTH);
         contentArea.add(tableScrollPane, BorderLayout.CENTER);
     }

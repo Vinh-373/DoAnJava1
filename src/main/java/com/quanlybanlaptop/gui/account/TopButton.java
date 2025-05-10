@@ -188,18 +188,21 @@ public class TopButton {
                 JOptionPane.showMessageDialog(null, "Hãy chọn một hàng để sửa");
                 return;
             }
-            // Lấy thông tin admin từ bảng
-            AdminDTO adminDTO = new AdminDTO(
-                    Integer.parseInt(table.getValueAt(row, 0).toString()),  // ID
-                    table.getValueAt(row, 6).toString().equals("Chủ") ? 1 : 
-                    table.getValueAt(row, 6).toString().equals("Quản Lý") ? 2 : 3, // Trạng thái,
-                    table.getValueAt(row, 1).toString(),                     // Tên
-                    table.getValueAt(row, 2).toString(),                     // Giới tính
-                    table.getValueAt(row, 3).toString(),                     // Email
-                    table.getValueAt(row, 4).toString(),                     // Liên hệ
-                    table.getValueAt(row, 5).toString(),                     // Mật khẩu
-                    table.getValueAt(row, 7).toString().equals("Hoạt động") ? 1 : 0 // Trạng thái
-            );
+            AdminDTO adminDTO = new AdminDTO();
+            try {
+                int id = Integer.parseInt(table.getValueAt(row, 0).toString());
+                 adminDTO = adminBUS.getAdminById(id);
+                if (adminDTO == null) {
+                    JOptionPane.showMessageDialog(null, "Không tìm thấy thông tin tài khoản!");
+                    return;
+                }
+            } catch (Exception ex) {
+
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Có lỗi xảy ra khi lấy thông tin tài khoản!");
+                // TODO: handle exception
+            }
+           
             AddAccDialog.createDialog("Sửa",adminDTO); // Mở form "Sửa"
         });
 
