@@ -131,6 +131,17 @@ public class AdminDAO {
         }
 
     }
+    public AdminDTO getAdminById(int id) throws SQLException {
+        String sql = "SELECT * FROM ADMIN WHERE id_admin = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return createAdminDTO(rs);
+            }
+        }
+        return null;
+    }
     public ArrayList<AdminDTO> searchAdmin(String keyword, String field, int status) throws SQLException {
         ArrayList<AdminDTO> list = new ArrayList<>();
         String sql = "SELECT * FROM ADMIN WHERE " + field + " LIKE ? AND status = ?";
