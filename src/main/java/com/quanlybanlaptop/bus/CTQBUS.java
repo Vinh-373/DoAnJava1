@@ -13,5 +13,7 @@ public class CTQBUS {
     public boolean updateIsChecked(int idRole, int idAuthority, int idCTQ, boolean isChecked) {
         return ctqdao.updateIsChecked(idRole, idAuthority,idCTQ, isChecked);
     }
-    
+    public boolean insert(int idRole) {
+        return ctqdao.insert(idRole);
+    }
 }

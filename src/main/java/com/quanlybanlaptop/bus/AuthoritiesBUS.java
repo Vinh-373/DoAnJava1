@@ -12,4 +12,7 @@ public class AuthoritiesBUS {
     public boolean updateIsChecked(int idRole, int idAuthority, boolean isChecked) {
         return authoritiesDAO.updateIsChecked(idRole, idAuthority, isChecked);
     }
+    public boolean insert(int idRole) {
+        return authoritiesDAO.insert(idRole);
+    }
 }

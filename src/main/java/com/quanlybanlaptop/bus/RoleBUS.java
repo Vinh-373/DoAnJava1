@@ -12,4 +12,16 @@ public class RoleBUS {
     public ArrayList<RoleDTO> getAllRoles() throws SQLException {
         return roleDAO.getAllRoles();
     }
+    public RoleDTO getRoleById(int idRole) throws SQLException {
+        return roleDAO.getRoleById(idRole);
+    }
+    public int addRole(RoleDTO roleDTO) throws SQLException {
+        return roleDAO.insert(roleDTO);
+    }
+    public boolean updateNameRole(String name, int id) throws SQLException {
+        return roleDAO.updateNameRole(name, id);
+    }
+    public boolean updateStatusRole(int status, int id) throws SQLException {
+        return roleDAO.updateStatus(status, id);
+    }
 }

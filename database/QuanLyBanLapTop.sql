@@ -9,10 +9,10 @@ CREATE TABLE [PRODUCT] (
     [id_product] INTEGER NOT NULL IDENTITY UNIQUE,
     [name] NVARCHAR(100) NOT NULL,
     [cpu] VARCHAR(50) NOT NULL,
-    [ram] VARCHAR(20) NOT NULL,
-    [rom] VARCHAR(20) NOT NULL,
-    [graphics_card] VARCHAR(50) NOT NULL,
-    [battery] VARCHAR(20) NOT NULL,
+    [ram] VARCHAR(50) NOT NULL,
+    [rom] VARCHAR(50) NOT NULL,
+    [graphics_card] VARCHAR(150) NOT NULL,
+    [battery] VARCHAR(120) NOT NULL,
     [weight] VARCHAR(10) NOT NULL,
     [price] DECIMAL NOT NULL,
     [quantity] INTEGER NOT NULL DEFAULT 0,
@@ -20,8 +20,8 @@ CREATE TABLE [PRODUCT] (
     [id_category] INTEGER NOT NULL,
     [id_company] INTEGER NOT NULL,
     [img] VARCHAR(255) NOT NULL,
-    [size_screen] VARCHAR(20) NOT NULL,
-    [operating_system] VARCHAR(50) NOT NULL,
+    [size_screen] VARCHAR(120) NOT NULL,
+    [operating_system] VARCHAR(150) NOT NULL,
     [status] INTEGER NOT NULL,
     PRIMARY KEY([id_product])
 );
@@ -477,3 +477,75 @@ INSERT INTO ADMIN (id_role, name, gender, email, contact, password, status) VALU
 (2, N'Tran Minh Tu', N'Male', N'tranminhtu@gmail.com', N'0907654321', N'password456', 1),
 (3, N'Nguyễn Văn Hùng', N'Male', N'nguyenvanhung@gmail.com', N'0916826432', N'password789', 1);
 GO
+
+INSERT INTO CUSTOMER (name, gender, birthdate, citizen_id, contact, status)
+VALUES 
+(N'Nguyễn Văn A', N'Nam', '1995-03-15', '012345678901', '0912345678', 1),
+(N'Trần Thị B', N'Nữ', '1990-07-22', '012345678902', '0987654321', 1),
+(N'Lê Văn C', N'Nam', '1988-12-05', '012345678903', '0901122334', 1);
+
+INSERT INTO PRODUCT (name, cpu, ram, rom, graphics_card, battery, weight, price, quantity, quantity_stock, id_category, id_company, img, size_screen, operating_system, status)
+VALUES
+(N'Dell Inspiron 15', 'Intel Core i5-1135G7', '8GB', '512GB SSD', 'Intel Iris Xe', '3-cell, 42Wh', '1.75kg', 15990000, 3, 3, 2, 1, 'dell_inspiron_15.jpg', '15.6"', 'Windows 11', 1),
+(N'HP Pavilion x360', 'Intel Core i7-1255U', '16GB', '1TB SSD', 'Intel Iris Xe', '3-cell, 43Wh', '1.65kg', 19990000, 1, 2, 2, 2, 'hp_pavilion_x360.jpg', '14"', 'Windows 11', 1),
+(N'MacBook Air M2', 'Apple M2', '8GB', '256GB SSD', 'Apple GPU 8-core', 'Li-Po 52.6Wh', '1.24kg', 28990000, 0, 2, 3, 4, 'macbook_air_m2.jpg', '13.6"', 'macOS Ventura', 1);
+
+INSERT INTO SERI_PRODUCT (num_seri,id_product,status)
+VALUES
+('[01]1',1,2),
+('[01]2',1,2),
+('[01]3',1,2),
+('[01]4',1,1),
+('[01]5',1,1),
+('[01]6',1,1),
+('[01]7',1,0),
+('[01]8',1,0),
+('[01]9',1,0),
+('[02]1',1,2),
+('[02]2',1,2),
+('[02]3',1,1),
+('[02]4',1,0),
+('[02]5',1,0),
+('[03]1',1,2),
+('[03]2',1,0),
+('[03]3',1,0);
+
+INSERT INTO BILL_IMPORT (id_admin, id_product, unit_price, total_price, quantity, date_import)
+VALUES 
+(1, 1, 13000000, 117000000, -9, '2025-03-01T10:00:00'),
+(3, 2, 17000000, 85000000, -5, '2025-04-03T11:30:00'),
+(2, 3, 25000000, 75000000, -3, '2025-05-05T09:15:00'),
+(3, 1, 13000000, 78000000, 6, '2025-03-03T10:00:00'),
+(3, 2, 17000000, 51000000, 3, '2025-04-06T11:30:00'),
+(2, 3, 25000000, 25000000, 1, '2025-05-08T09:15:00');
+
+INSERT INTO BILL_EXPORT (id_admin, id_customer, total_product, total_price, status, date_ex)
+VALUES
+(1, 1, 1, 15990000, 1, '2025-03-03T14:00:00'),  
+(3, 2, 1, 15990000, 1, '2025-03-04T14:00:00'),  
+(3, 3, 1, 15990000, 1, '2025-03-20T14:00:00'),  
+(2, 2, 1, 19990000, 1, '2025-04-07T09:45:00'),  
+(3, 3, 1, 19990000, 1, '2025-04-08T16:30:00'),
+(3, 1, 1, 28990000, 1, '2025-05-09T16:30:00');  
+
+INSERT INTO BILL_EXPORT_DETAIL (id_bill_ex, id_product, num_seri, unit_price)
+VALUES 
+(1, 1, '[01]1', 15990000),
+(2, 1, '[01]2', 15990000),
+(3, 1, '[01]3', 15990000),
+(4, 2, '[02]1', 19990000),
+(5, 2, '[02]2', 19990000),
+(6, 3, '[03]1', 28990000);
+
+INSERT INTO INSURANCE (id_admin, id_customer, id_product, num_seri, start_date, end_date, description)
+VALUES
+(1, 1, 1, '[01]1', '2025-03-03', '2026-03-03', N'Bảo hành toàn máy 12 tháng'),
+(2, 2, 1, '[01]2', '2025-03-04', '2026-03-04', N'Bảo hành toàn máy 12 tháng'),
+(3, 3, 1, '[01]3', '2025-03-20', '2026-03-20', N'Bảo hành toàn máy 12 tháng'),
+(2, 2, 2, '[02]1', '2025-04-07', '2026-04-07', N'Bảo hành toàn máy 12 tháng'),
+(2, 3, 2, '[02]1', '2025-04-07', '2026-04-07', N'Bảo hành toàn máy 12 tháng'),
+(1, 1, 3, '[03]1', '2025-05-09', '2027-05-09', N'Bảo hành toàn máy 24 tháng');
+
+
+
+
