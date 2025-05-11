@@ -3,6 +3,8 @@ package com.quanlybanlaptop.gui.thongKe;
 import javax.swing.*;
 import java.awt.*;
 import com.quanlybanlaptop.bus.ThongKeBUS;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.List;
 
 public class TongQuan extends JPanel {
@@ -46,10 +48,17 @@ public class TongQuan extends JPanel {
         Object[][] data = new Object[7][3];
 
         try {
+
+            DecimalFormat dt = new DecimalFormat("#,###.00");
             // Lấy dữ liệu 7 ngày gần nhất từ BUS (giả sử trả về List<Object[]>)
             List<Object[]> doanhThu7Ngay = thongKeBUS.getDoanhThu7NgayGanNhat();
             for (int i = 0; i < doanhThu7Ngay.size() && i < 7; i++) {
-                data[i] = doanhThu7Ngay.get(i);
+                Object[] row = doanhThu7Ngay.get(i);
+
+                data[i][0] = row[0];
+                data[i][1] = dt.format((Number) row[1]);
+                data[i][2] = dt.format((Number) row[2]);
+
             }
         } catch (Exception ex) {
             ex.printStackTrace();

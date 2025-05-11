@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 import com.quanlybanlaptop.util.ExcelExporter;
 import com.quanlybanlaptop.bus.ThongKeBUS;
+import java.text.DecimalFormat;
 public class ThongKeNgayPanel extends JPanel {
     private JTable table;
     private JComboBox<Integer> cbNam;
@@ -81,7 +82,7 @@ public class ThongKeNgayPanel extends JPanel {
             YearMonth yearMonth = YearMonth.of(year, month);
             int daysInMonth = yearMonth.lengthOfMonth();
             List<Object[]> statsList = thongKeBUS.getDailyStatistics(year, month);
-
+            DecimalFormat dt = new DecimalFormat("#,###.00");
             // Chuẩn bị dữ liệu cho Excel
             List<String> headers = Arrays.asList("Ngày", "Vốn", "Doanh thu", "Lợi nhuận");
             List<List<Object>> data = new ArrayList<>();
@@ -89,9 +90,9 @@ public class ThongKeNgayPanel extends JPanel {
                 Object[] stats = statsList.get(i);
                 List<Object> row = new ArrayList<>();
                 row.add(stats[0]); // Ngày
-                row.add(String.format("%.2f", (Double) stats[1])); // Vốn
-                row.add(String.format("%.2f", (Double) stats[2])); // Doanh thu
-                row.add(String.format("%.2f", (Double) stats[3])); // Lợi nhuận
+                row.add(dt.format((Number) stats[1])); // Vốn
+                row.add(dt.format((Number) stats[2])); // Doanh thu
+                row.add(dt.format((Number) stats[3])); // Lợi nhuận
                 data.add(row);
             }
 
@@ -120,33 +121,29 @@ public class ThongKeNgayPanel extends JPanel {
 
     // Phương thức để cập nhật bảng với dữ liệu từ ThongKeBUS
     private void updateTable(int year, int month) {
-        try {
-            // Lấy số ngày trong tháng
-            YearMonth yearMonth = YearMonth.of(year, month);
-            int daysInMonth = yearMonth.lengthOfMonth();
+    try {
+        YearMonth yearMonth = YearMonth.of(year, month);
+        int daysInMonth = yearMonth.lengthOfMonth();
 
-            // Lấy dữ liệu từ ThongKeBUS
-            List<Object[]> statsList = thongKeBUS.getDailyStatistics(year, month);
-
-            // Làm mới bảng
-            for (int i = 0; i < 31; i++) {
-                if (i < daysInMonth && i < statsList.size()) {
-                    Object[] stats = statsList.get(i);
-                    table.setValueAt(stats[0], i, 0); // Ngày (String)
-                    table.setValueAt(String.format("%.2f", (Double) stats[1]), i, 1); // Vốn
-                    table.setValueAt(String.format("%.2f", (Double) stats[2]), i, 2); // Doanh thu
-                    table.setValueAt(String.format("%.2f", (Double) stats[3]), i, 3); // Lợi nhuận
-                } else {
-                    // Ngày không tồn tại trong tháng (ví dụ: ngày 31 trong tháng 2)
-                    table.setValueAt((i + 1) + "", i, 0); // Ngày
-                    table.setValueAt("", i, 1); // Vốn
-                    table.setValueAt("", i, 2); // Doanh thu
-                    table.setValueAt("", i, 3); // Lợi nhuận
-                }
+        List<Object[]> statsList = thongKeBUS.getDailyStatistics(year, month);
+        DecimalFormat dt = new DecimalFormat("#,###.00");
+        for (int i = 0; i < 31; i++) {
+            if (i < daysInMonth && i < statsList.size()) {
+                Object[] stats = statsList.get(i);
+                table.setValueAt(stats[0], i, 0); // Ngày (String)
+                table.setValueAt(dt.format((Number) stats[1]), i, 1); // Vốn
+                table.setValueAt(dt.format((Number) stats[2]), i, 2); // Doanh thu
+                table.setValueAt(dt.format((Number) stats[3]), i, 3); // Lợi nhuận
+            } else {
+                table.setValueAt((i + 1) + "", i, 0); // Ngày
+                table.setValueAt(dt.format(0), i, 1); // Vốn
+                table.setValueAt(dt.format(0), i, 2); // Doanh thu
+                table.setValueAt(dt.format(0), i, 3); // Lợi nhuận
             }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Lỗi khi lấy dữ liệu thống kê!", "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Lỗi khi lấy dữ liệu thống kê!", "Lỗi", JOptionPane.ERROR_MESSAGE);
     }
+}
 }

@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.io.IOException;
 import com.quanlybanlaptop.bus.ThongKeBUS;
+import java.text.DecimalFormat;
 public class ThongKeNamPanel extends JPanel {
     private JTable table;
     private JComboBox<Integer> cbNam;
@@ -73,19 +74,19 @@ public class ThongKeNamPanel extends JPanel {
         try {
             int startYear = year - 9; // Hiển thị 10 năm từ startYear
             List<Object[]> statsList = thongKeBUS.getYearlyStatistics(startYear);
-
+            DecimalFormat dt = new DecimalFormat("#,###.00");
             for (int i = 0; i < 10; i++) {
                 if (i < statsList.size()) {
                     Object[] stats = statsList.get(i);
                     table.setValueAt(stats[0], i, 0); // Năm (String)
-                    table.setValueAt(String.format("%.2f", (Double) stats[1]), i, 1); // Vốn
-                    table.setValueAt(String.format("%.2f", (Double) stats[2]), i, 2); // Doanh thu
-                    table.setValueAt(String.format("%.2f", (Double) stats[3]), i, 3); // Lợi nhuận
+                    table.setValueAt(dt.format((Number) stats[1]), i, 1); // Vốn
+                    table.setValueAt(dt.format((Number) stats[2]), i, 2); // Doanh thu
+                    table.setValueAt(dt.format((Number) stats[3]), i, 3); // Lợi nhuận
                 } else {
                     table.setValueAt((startYear + i) + "", i, 0); // Năm
-                    table.setValueAt("", i, 1); // Vốn
-                    table.setValueAt("", i, 2); // Doanh thu
-                    table.setValueAt("", i, 3); // Lợi nhuận
+                    table.setValueAt(dt.format(0), i, 1); // Vốn
+                    table.setValueAt(dt.format(0), i, 2); // Doanh thu
+                    table.setValueAt(dt.format(0), i, 3); // Lợi nhuận
                 }
             }
         } catch (SQLException ex) {
@@ -99,7 +100,7 @@ public class ThongKeNamPanel extends JPanel {
         try {
             int startYear = year - 9;
             List<Object[]> statsList = thongKeBUS.getYearlyStatistics(startYear);
-
+            DecimalFormat dt = new DecimalFormat("#,###.00");
             // Chuẩn bị dữ liệu cho Excel
             List<String> headers = Arrays.asList("Năm", "Vốn", "Doanh thu", "Lợi nhuận");
             List<List<Object>> data = new ArrayList<>();
@@ -107,9 +108,9 @@ public class ThongKeNamPanel extends JPanel {
                 Object[] stats = statsList.get(i);
                 List<Object> row = new ArrayList<>();
                 row.add(stats[0]); // Năm
-                row.add(String.format("%.2f", (Double) stats[1])); // Vốn
-                row.add(String.format("%.2f", (Double) stats[2])); // Doanh thu
-                row.add(String.format("%.2f", (Double) stats[3])); // Lợi nhuận
+                row.add(dt.format((Number) stats[1])); // Vốn
+                row.add(dt.format((Number) stats[2])); // Doanh thu
+                row.add(dt.format((Number) stats[3])); // Lợi nhuận
                 data.add(row);
             }
 
