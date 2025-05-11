@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.io.IOException;
 import com.quanlybanlaptop.bus.ThongKeBUS;
+import java.text.DecimalFormat;
 
 public class SanPham extends JPanel {
     private JTable table;
@@ -170,7 +171,7 @@ public class SanPham extends JPanel {
         try {
             List<Object[]> statsList = thongKeBUS.getProductStatistics(productName, startDate, endDate);
             System.out.println("Số lượng bản ghi trả về: " + statsList.size());
-
+            DecimalFormat dt = new DecimalFormat("#,###.00");
             // Tạo dữ liệu cho bảng
             Object[][] data = new Object[statsList.size()][4];
             for (int i = 0; i < statsList.size(); i++) {
@@ -178,7 +179,7 @@ public class SanPham extends JPanel {
                 data[i][0] = stats[0]; // Mã sản phẩm
                 data[i][1] = stats[1]; // Tên sản phẩm
                 data[i][2] = stats[2]; // Số lượng bán
-                data[i][3] = String.format("%.2f", (Double) stats[3]); // Doanh thu
+                data[i][3] = dt.format((Number) stats[3]); // Doanh thu
             }
 
             // Cập nhật bảng
