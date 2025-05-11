@@ -1,11 +1,17 @@
 package com.quanlybanlaptop.gui.account;
 
 import com.quanlybanlaptop.bus.AdminBUS;
+import com.quanlybanlaptop.bus.RoleBUS;
+import com.quanlybanlaptop.dao.DatabaseConnection;
+import com.quanlybanlaptop.dao.RoleDAO;
 import com.quanlybanlaptop.dto.AdminDTO;
+import com.quanlybanlaptop.dto.RoleDTO;
 import com.quanlybanlaptop.gui.component.RoundedTable;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -22,20 +28,14 @@ public class AccountTable {
         table.setRequestFocusEnabled(false); // Không nhận focus từ bàn phím
         table.setDefaultEditor(Object.class, null); // Tắt focus trên từng ô
         JScrollPane scrollPane = new JScrollPane(table);
+       
         try {
             ArrayList<AdminDTO> adminDTOS = adminBUS.getActiveAdmin(1);
-            ArrayList<AdminDTO> adminDTOS1 = new ArrayList<>();
-            for (AdminDTO ad : adminDTOS) {
-                if (ad.getIdRole() == 3) {
-                    adminDTOS1.add(ad);
-                }
-            }
-            if(adminDTO.getIdRole() == 1){
+           
+           
                             loadTable(adminDTOS);
 
-            }else if(adminDTO.getIdRole() == 2){
-                loadTable(adminDTOS1);
-            }
+           
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -43,18 +43,27 @@ public class AccountTable {
     }
     public static void loadTable(ArrayList<AdminDTO> adminList) {
         tableModel.setRowCount(0);
+          Connection cnn = DatabaseConnection.getConnection();
+        RoleDAO roleDAO = new RoleDAO(cnn);
+        RoleBUS roleBUS = new RoleBUS(roleDAO);
         for (AdminDTO admin : adminList) {
-            tableModel.addRow(new Object[]{
+            try {
+                RoleDTO roleDTO = roleBUS.getRoleById(admin.getIdRole());
+                String nameRole = roleDTO.getNameRole();
+                tableModel.addRow(new Object[]{
                     admin.getId(),
                     admin.getName(),
                     admin.getGender(),
                     admin.getEmail(),
                     admin.getContact(),
-                    admin.getIdRole() == 1 ? "Chủ" :
-                    admin.getIdRole() == 2 ? "Quản Lý": "Nhân Viên",
+                    nameRole,
                     admin.getStatus() == 1 ? "Hoạt Động" : "Ngừng Hoạt Động"
 
             });
+            } catch (Exception e) {
+                // TODO: handle exception
+            }
+            
         }
     }
     public static JTable getTableModel() {

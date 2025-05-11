@@ -39,4 +39,27 @@ public class AuthoritiesDAO {
         }
         
     }
+    public boolean insert(int idRole) {
+    String sql = "INSERT INTO AUTHORITIES (id_role, id_authorities, name_authorities, status) VALUES " +
+                "(?, 1, N'Sản phẩm', 0), " +
+                "(?, 2, N'Loại hãng', 0), " +
+                "(?, 3, N'Khách hàng', 0), " +
+                "(?, 4, N'Tài khoản', 0), " +
+                "(?, 5, N'Hóa đơn', 0), " +
+                "(?, 6, N'Kho hàng', 0), " +
+                "(?, 7, N'Bảo hành', 0), " +
+                "(?, 8, N'Thống kê', 0), " +
+                "(?, 9, N'Phân quyền', 0)";
+    try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        // Set idRole for each row
+        for (int i = 1; i <= 9; i++) {
+            stmt.setInt(i, idRole);
+        }
+        int rowsInserted = stmt.executeUpdate();
+        return rowsInserted > 0;
+    } catch (SQLException e) {
+        e.printStackTrace();
+        return false;
+    }
+}
 }

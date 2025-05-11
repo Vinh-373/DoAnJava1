@@ -41,7 +41,6 @@ public class SidebarPanel extends JPanel {
         } else {
             System.err.println("Không thể tải ảnh avatar.png");
         }
-
         userLabel = new JLabel(adminDTO.getName());
         userLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         updateUserFontSize(); // Cập nhật kích thước font ban đầu

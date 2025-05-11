@@ -4,9 +4,9 @@ import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
 import java.sql.*;
 
 public class DatabaseConnection {
-    private static final String SERVER = "QHOANG\\SQLEXPRESS";
+    private static final String SERVER = "LAPTOP-HDQ605AN\\SQLEXPRESS";
     private static final String USER = "sa";
-    private static final String PASSWORD = "23082005";
+    private static final String PASSWORD = "123";
     private static final String DATABASE = "QLLT";
     private static final int PORT = 1433;
     private static Connection con = null;

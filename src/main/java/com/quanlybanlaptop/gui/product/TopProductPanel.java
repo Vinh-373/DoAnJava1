@@ -272,7 +272,6 @@ public class TopProductPanel {//panel các nút
         });
         btnImportEx.addActionListener(e -> {
             JFileChooser fileChooser = new JFileChooser();
-            fileChooser.setCurrentDirectory(new File("D:/Doanjava/QuanLyBanLaptop/src/main/resources/importData"));
             int result = fileChooser.showOpenDialog(null);
             if (result == JFileChooser.APPROVE_OPTION) {
                 File file = fileChooser.getSelectedFile();
