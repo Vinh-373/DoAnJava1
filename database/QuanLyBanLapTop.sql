@@ -337,7 +337,7 @@ INSERT INTO COMPANY (name_company, address, contact, status) VALUES
 
 INSERT INTO ROLE (name_role, status) VALUES
 (N'Chủ', 1),
-(N'Quản Lý', 1),
+(N'Quản Lý', 0),
 (N'Nhân Viên', 1);
 GO
 
