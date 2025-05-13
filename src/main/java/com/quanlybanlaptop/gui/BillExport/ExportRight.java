@@ -12,6 +12,9 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
+
+import org.jdesktop.swingx.prompt.PromptSupport;
+
 import java.awt.*;
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -115,6 +118,7 @@ public class ExportRight {
         lblNV.setFont(fieldFont);
         lblKH = new JLabel("KH:");
         lblKH.setFont(fieldFont);
+         PromptSupport.setPrompt("Nhập CCCD", txtKH);
         isVisible(0);
         row2.add(lblNV);
         row2.add(txtNV);

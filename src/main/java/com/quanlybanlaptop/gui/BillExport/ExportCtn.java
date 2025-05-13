@@ -2,6 +2,7 @@ package com.quanlybanlaptop.gui.BillExport;
 
 import com.quanlybanlaptop.bus.BillExDetailBUS;
 import com.quanlybanlaptop.bus.BillExportBUS;
+import com.quanlybanlaptop.bus.CustomerBUS;
 import com.quanlybanlaptop.bus.ProductBUS;
 import com.quanlybanlaptop.bus.SeriProductBUS;
 import com.quanlybanlaptop.dto.AdminDTO;
@@ -12,10 +13,10 @@ import java.sql.SQLException;
 
 public class ExportCtn {
 
-    public static void createExportPanel(JPanel contentArea,AdminDTO adminDTO ,BillExportBUS billExportBUS, BillExDetailBUS billExDetailBUS, ProductBUS productBUS, SeriProductBUS seriProductBUS) {
+    public static void createExportPanel(JPanel contentArea,AdminDTO adminDTO ,BillExportBUS billExportBUS, BillExDetailBUS billExDetailBUS, ProductBUS productBUS, SeriProductBUS seriProductBUS,CustomerBUS customerBUS) {
         contentArea.setLayout(new BorderLayout());
         contentArea.setBackground(new Color(239, 237, 237));
-        JPanel buttonPanel = TopButton.createTopPanel(adminDTO,billExportBUS,billExDetailBUS,seriProductBUS,productBUS);
+        JPanel buttonPanel = TopButton.createTopPanel(adminDTO,billExportBUS,billExDetailBUS,seriProductBUS,productBUS,customerBUS);
         JPanel contentPanel = new JPanel(new BorderLayout());
         JPanel spacer = new JPanel();
         spacer.setBackground(new Color(239, 237, 237));

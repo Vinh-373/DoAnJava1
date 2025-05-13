@@ -134,6 +134,10 @@ public class AddCustomer extends JFrame {
 
                 // Gọi BUS để thêm khách hàng
                 CustomerBUS customerBUS = new CustomerBUS();
+                if(customerBUS.getByCCCD(customer.getCitizenId()) != null){
+                     JOptionPane.showMessageDialog(AddCustomer.this, "CCCD đã tồn tại.");
+                    return;
+                }
                 boolean success = customerBUS.addCustomer(customer);
 
                 if (success) {

@@ -46,6 +46,9 @@ public class CustomerBUS {
     public CustomerDTO getCustomerById(int id) {
         return customerDAO.getCustomerById(id);
     }
+    public CustomerDTO getByCCCD(String cccd){
+        return customerDAO.getByCCCD(cccd);
+    }
     // Kiểm tra dữ liệu đầu vào
     private boolean isValidCustomer(CustomerDTO customer) {
         return customer.getName() != null && !customer.getName().trim().isEmpty()
