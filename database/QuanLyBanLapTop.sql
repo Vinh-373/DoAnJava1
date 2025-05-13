@@ -53,7 +53,7 @@ CREATE TABLE [CUSTOMER] (
     [name] NVARCHAR(50) NOT NULL,
     [gender] NVARCHAR(10) NOT NULL,
     [birthdate] DATE NOT NULL,         -- Ngày sinh
-    [citizen_id] VARCHAR(20) NOT NULL, -- Số CCCD
+    [citizen_id] VARCHAR(20) NOT NULL UNIQUE, -- Số CCCD
     [contact] VARCHAR(20) NOT NULL,
     [status] INTEGER NOT NULL,
     PRIMARY KEY([id_customer])
@@ -501,14 +501,14 @@ VALUES
 ('[01]7',1,0),
 ('[01]8',1,0),
 ('[01]9',1,0),
-('[02]1',1,3),
-('[02]2',1,3),
-('[02]3',1,1),
-('[02]4',1,0),
-('[02]5',1,0),
-('[03]1',1,3),
-('[03]2',1,0),
-('[03]3',1,0);
+('[02]1',2,3),
+('[02]2',2,3),
+('[02]3',2,1),
+('[02]4',2,0),
+('[02]5',2,0),
+('[03]1',3,3),
+('[03]2',3,0),
+('[03]3',3,0);
 
 INSERT INTO BILL_IMPORT (id_admin, id_product, unit_price, total_price, quantity, date_import)
 VALUES 
@@ -545,7 +545,4 @@ VALUES
 (2, 2, 2, '[02]1', '2025-04-07', '2026-04-07', N'Bảo hành toàn máy 12 tháng'),
 (2, 3, 2, '[02]2', '2025-04-07', '2026-04-07', N'Bảo hành toàn máy 12 tháng'),
 (1, 1, 3, '[03]1', '2025-05-09', '2027-05-09', N'Bảo hành toàn máy 24 tháng');
-
-
-
 

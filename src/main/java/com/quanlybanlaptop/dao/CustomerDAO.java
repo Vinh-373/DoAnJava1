@@ -38,6 +38,29 @@ public class CustomerDAO {
     return customers;
 }
 
+    public CustomerDTO getByCCCD(String cccd){
+        String query = "SELECT * FROM Customer WHERE citizen_id = ?";
+         try {
+            PreparedStatement pstmt = DatabaseConnection.getConnection().prepareStatement(query);
+            pstmt.setString(1, cccd);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                CustomerDTO customer = new CustomerDTO();
+                customer.setId(rs.getInt("id_customer"));
+                customer.setName(rs.getString("name"));
+                customer.setBirthdate(rs.getDate("birthdate"));
+                customer.setGender(rs.getString("gender"));
+                customer.setPhone(rs.getString("contact"));
+                customer.setCitizenId(rs.getString("citizen_id"));
+                customer.setStatus(rs.getInt("status"));
+                return customer;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    
 
     // Thêm khách hàng
    public boolean addCustomer(CustomerDTO customer) {

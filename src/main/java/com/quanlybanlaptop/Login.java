@@ -125,7 +125,7 @@ public class Login extends JFrame {
                                 customerBUS,
                                 insuranceClaimBUS,
                                 thongKeBUS
-                            
+                        
                             );
                             mainFrame.setVisible(true);
                         } catch (Exception ex) {

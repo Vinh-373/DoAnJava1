@@ -56,7 +56,7 @@ public class StockTableR {
                                 bill.getUnitPrice()
                         };
                         tableModel.addRow(rowData);
-                    }
+                    }else
                     if(status == 1 && bill.getQuantity() > 0) {
                         titleLabel.setText("LỊCH SỬ PHIẾU XUẤT KHO");
 
@@ -65,7 +65,9 @@ public class StockTableR {
                                 bill.getNameAdmin(),
                                 bill.getQuantity(),
                                 bill.getImportDate(),
+                                bill.getUnitPrice()
                         };
+                        System.out.print("kkkk :" + bill.getUnitPrice());
                         tableModel.addRow(rowData);
                     }
 
@@ -85,6 +87,7 @@ public class StockTableR {
                         bill.getNameAdmin(),
                         bill.getQuantity()*(-1),
                         bill.getImportDate(),
+                        bill.getUnitPrice()
                 });
             }else{
                 tableModel.addRow(new Object[]{
@@ -92,6 +95,7 @@ public class StockTableR {
                         bill.getNameAdmin(),
                         bill.getQuantity(),
                         bill.getImportDate(),
+                        bill.getUnitPrice()
                 });
             }
 

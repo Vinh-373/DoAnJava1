@@ -1,9 +1,10 @@
 package com.quanlybanlaptop.gui.BillExport;
-
+import org.jdesktop.swingx.prompt.PromptSupport;
 import com.quanlybanlaptop.bus.AuthoritiesBUS;
 import com.quanlybanlaptop.bus.BillExDetailBUS;
 import com.quanlybanlaptop.bus.BillExportBUS;
 import com.quanlybanlaptop.bus.CTQBUS;
+import com.quanlybanlaptop.bus.CustomerBUS;
 import com.quanlybanlaptop.bus.ProductBUS;
 import com.quanlybanlaptop.bus.RoleBUS;
 import com.quanlybanlaptop.bus.SeriProductBUS;
@@ -14,6 +15,7 @@ import com.quanlybanlaptop.dao.RoleDAO;
 import com.quanlybanlaptop.dto.AdminDTO;
 import com.quanlybanlaptop.dto.BillExDetailDTO;
 import com.quanlybanlaptop.dto.BillExportDTO;
+import com.quanlybanlaptop.dto.CustomerDTO;
 import com.quanlybanlaptop.gui.component.RoundedButton;
 import com.quanlybanlaptop.gui.component.RoundedComponent;
 import com.quanlybanlaptop.util.ImageLoader;
@@ -45,7 +47,7 @@ public class TopButton {
     private static JComboBox<String> cmb;
     private static JTextField txtSearch;
 
-    public static JPanel createTopPanel(AdminDTO adminDTO, BillExportBUS billExportBUS, BillExDetailBUS billExDetailBUS, SeriProductBUS seriProductBUS, ProductBUS productBUS) {
+    public static JPanel createTopPanel(AdminDTO adminDTO, BillExportBUS billExportBUS, BillExDetailBUS billExDetailBUS, SeriProductBUS seriProductBUS, ProductBUS productBUS, CustomerBUS customerBUS) {
         JPanel panel = new JPanel(new GridBagLayout());
         panel.setBackground(Color.WHITE);
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -101,6 +103,7 @@ public class TopButton {
             }
             ExportRight.getTxtNV().setText("");
             ExportRight.getTxtKH().setText("");
+            PromptSupport.setPrompt("Nhập CCCD", ExportRight.getTxtKH());
             ExportRight.getTxtID().setText("");
             ExportRight.getTxtDate().setText("");
             ExportRight.getTable().setRowCount(0);
@@ -142,7 +145,16 @@ public class TopButton {
 
             BigDecimal totalPrice = new BigDecimal(ExportRight.getTongTien().getText().replaceAll("[^0-9]", ""));
             Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
-            BillExportDTO billExportDTO = new BillExportDTO(0, adminDTO.getId(), Integer.parseInt(ExportRight.getTxtKH().getText()), totalPrd, totalPrice, currentTimestamp, 1, adminDTO.getName(), "Hoàng Minh Tú");
+            String cccd = ExportRight.getTxtKH().getText();
+            if (cccd.isEmpty() || cccd == null){
+                JOptionPane.showMessageDialog(null, "Căn cước không hợp lệ");
+                return;
+            } else if(customerBUS.getByCCCD(cccd) == null){
+                JOptionPane.showMessageDialog(null, "CCCD KH chưa có trong hệ thống");
+                return;
+            }
+            CustomerDTO customerDTO =  customerBUS.getByCCCD(cccd);
+            BillExportDTO billExportDTO = new BillExportDTO(0, adminDTO.getId(), customerDTO.getId(), totalPrd, totalPrice, currentTimestamp, 1, adminDTO.getName(), "Hoàng Minh Tú");
             int idBill = 0;
             try {
                 billExportBUS.addBillExport(billExportDTO);
@@ -170,7 +182,7 @@ public class TopButton {
                 int number = Integer.parseInt(stringValue);
                 int idProduc = Integer.parseInt(stringIdProduct);
                 try {
-                    productBUS.updateqtityStore(idProduc, number);
+                    productBUS.updateqtityStore(idProduc, -number);
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(null, "Lỗi khi cập nhật số lượng tồn kho: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
                     ex.printStackTrace();

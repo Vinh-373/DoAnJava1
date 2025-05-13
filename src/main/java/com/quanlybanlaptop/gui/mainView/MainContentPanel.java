@@ -201,7 +201,7 @@ public class MainContentPanel extends JPanel implements ContentChangeListener {
                 StockPanel.StockPanel(adminDTO, contentArea, productBUS, billImportBUS, seriProductBUS);
                 break;
             case "Hóa đơn":
-                ExportCtn.createExportPanel(contentArea, adminDTO, billExportBUS, billExDetailBUS, productBUS, seriProductBUS);
+                ExportCtn.createExportPanel(contentArea, adminDTO, billExportBUS, billExDetailBUS, productBUS, seriProductBUS, customerBUS);
                 break;
             case "Tài khoản":
                 AccountPanel.createAccountPanel(adminDTO,contentArea);
